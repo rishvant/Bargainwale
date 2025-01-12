@@ -20,19 +20,18 @@ const orgId = localStorage.getItem("organizationId");
 const response = await axios.get(`${API_BASE_URL}/organization/${orgId}`);
 
 const Invoice = forwardRef(({ sale }, ref) => {
-    const [items, setItems] = useState([]);
-    const [subtotal, setSubtotal] = useState(0);
-    const [totalTax, setTotalTax] = useState(0);
-    const [grandTotal, setGrandTotal] = useState(0);
+  const [items, setItems] = useState([]);
+  const [subtotal, setSubtotal] = useState(0);
+  const [totalTax, setTotalTax] = useState(0);
+  const [grandTotal, setGrandTotal] = useState(0);
   const organization = response.data;
-//   console.log("sales: ", sale);
 
   useEffect(() => {
-      if (sale && sale.sales) {
-          const newItems = [];
-          let subtotal = 0;
-          let totalTax = 0;
-          let grandTotal = 0;
+    if (sale?.sales) {
+      const newItems = [];
+      let subtotal = 0;
+      let totalTax = 0;
+      let grandTotal = 0;
 
       for (const saleDocument of sale.sales) {
         let saleItems = saleDocument.items.map((item, index) => {
@@ -40,10 +39,10 @@ const Invoice = forwardRef(({ sale }, ref) => {
           let taxPerUnit = 0;
           let totalAmount = 0;
 
-          for (const bookingItem of saleDocument.bookingId.items) {
-            if (bookingItem.item._id === item.itemId._id) {
+          for (const bookingItem of saleDocument.bookingId?.items || []) {
+            if (bookingItem.item?._id === item.itemId?._id) {
               itemPrice = bookingItem.basePrice;
-              taxPerUnit = (item.itemId.gst / 100) * itemPrice;
+              taxPerUnit = (item.itemId?.gst / 100) * itemPrice;
               totalAmount = item.quantity * (itemPrice + taxPerUnit);
             }
           }
@@ -54,11 +53,11 @@ const Invoice = forwardRef(({ sale }, ref) => {
 
           return {
             index: index + 1,
-            description: item.itemId.materialdescription || "N/A",
+            description: item.itemId?.materialdescription || "N/A",
             hsnCode: item.hsnCode || "N/A",
             quantity: item.quantity,
             price: itemPrice.toFixed(2),
-            gst: item.itemId.gst || 0,
+            gst: item.itemId?.gst || 0,
             totalAmount: totalAmount.toFixed(2),
             taxPerUnit: taxPerUnit.toFixed(2),
           };
@@ -71,46 +70,44 @@ const Invoice = forwardRef(({ sale }, ref) => {
       setItems(newItems);
     }
   }, [sale]);
-//   console.log(items);
-  // Round off to two decimal places
+
   const roundOff2 = (value) => {
     return Math.round(value * 100) / 100;
   };
 
-  // Handle download as PDF
-    const handleDownloadPDF = () => {
-      const element = document.querySelector(".invoice-container");
-      element.style.visibility = "visible";
-      html2canvas(element, {
-        allowTaint: true,
-        useCORS: true,
-        logging: false,
-        height: element.scrollHeight + 400,
-        windowHeight: element.scrollHeight + 400,
-      }).then((canvas) => {
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", [210, 350]);
-        const pdfWidth = 210;
-        const pdfHeight = 297;
+  const handleDownloadPDF = () => {
+    const element = document.querySelector(".invoice-container");
+    element.style.visibility = "visible";
+    html2canvas(element, {
+      allowTaint: true,
+      useCORS: true,
+      logging: false,
+      height: element.scrollHeight + 400,
+      windowHeight: element.scrollHeight + 400,
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", [210, 350]);
+      const pdfWidth = 210;
+      const pdfHeight = 297;
 
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-        const aspectRatio = canvasHeight / canvasWidth;
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const aspectRatio = canvasHeight / canvasWidth;
 
-        const imgWidth = pdfWidth - 20;
-        const imgHeight = imgWidth * aspectRatio;
+      const imgWidth = pdfWidth - 20;
+      const imgHeight = imgWidth * aspectRatio;
 
-        pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
 
-        pdf.save(`invoice_${sale._id}.pdf`);
-      });
+      pdf.save(`invoice_${sale?._id}.pdf`);
+    });
 
-      element.style.visibility = "hidden";
-    };
+    element.style.visibility = "hidden";
+  };
 
-    useImperativeHandle(ref, () => ({
-      handleDownloadPDF,
-    }));
+  useImperativeHandle(ref, () => ({
+    handleDownloadPDF,
+  }));
 
   return (
     <>
@@ -125,39 +122,29 @@ const Invoice = forwardRef(({ sale }, ref) => {
         <header className="flex justify-between border-b-2 pb-2 mb-6">
           <div className="flex flex-col items-start space-y-2">
             <p>
-              IRN: <strong>{sale.irn || "N/A"}</strong>
+              IRN: <strong>{sale?.irn || "N/A"}</strong>
             </p>
             <p>
-              Ack No.: <strong>{sale.ackNumber || "N/A"}</strong>
+              Ack No.: <strong>{sale?.ackNumber || "N/A"}</strong>
             </p>
             <p>
-              Ack Date: <strong>{formatDate(sale.invoiceDate) || "N/A"}</strong>
+              Ack Date:{" "}
+              <strong>{formatDate(sale?.invoiceDate) || "N/A"}</strong>
             </p>
           </div>
-          {/* <div className="text-center">
-            <p className="font-semibold">e-Invoice</p>
-            <div className="qr-code mt-2">
-              <img
-                src={purchase.qrCode || ""}
-                alt="QR Code"
-                className="w-24 h-24 bg-gray-300"
-              />
-            </div>
-          </div> */}
         </header>
         <div className="flex justify-between border-2 px-4 mb-6">
           <section className="flex-2 pr-4">
             <div className="border-b-2 pb-4 text-left">
-              <h2 className="font-bold text-lg">{organization.name}</h2>
-              <p> {organization.address.line1},</p>
-              <p> {organization.address.line2},</p>
+              <h2 className="font-bold text-lg">{organization?.name}</h2>
+              <p>{organization?.address?.line1},</p>
+              <p>{organization?.address?.line2},</p>
               <p>
-                <strong>GSTIN:</strong> {organization.gstin}
+                <strong>GSTIN:</strong> {organization?.gstin}
               </p>
               <p>
-                {" "}
-                {organization.address.city}, {organization.address.state},{" "}
-                {organization.address.pincode}
+                {organization?.address?.city}, {organization?.address?.state},{" "}
+                {organization?.address?.pincode}
               </p>
             </div>
             <section className="mt-4 pr-2">
@@ -166,22 +153,26 @@ const Invoice = forwardRef(({ sale }, ref) => {
                   <h3 className="font-semibold text-lg">
                     {party.charAt(0).toUpperCase() + party.slice(1)}
                   </h3>
-                  <h4>{sale.sales[0].bookingId.buyer.buyer}</h4>
+                  <h4>{sale?.sales[0]?.bookingId?.buyer?.buyer}</h4>
                   <p>
-                    {sale.sales[0].bookingId.buyer.buyerdeliveryAddress
-                      .addressLine1 || ""}
+                    {sale?.sales[0]?.bookingId?.buyer?.buyerdeliveryAddress
+                      ?.addressLine1 || ""}
                   </p>
                   <p>
-                    {sale.sales[0].bookingId.buyer.buyerdeliveryAddress
-                      .addressLine2 || ""}
+                    {sale?.sales[0]?.bookingId?.buyer?.buyerdeliveryAddress
+                      ?.addressLine2 || ""}
                   </p>
                   <p>
-                    {sale.sales[0].bookingId.buyer.buyerdeliveryAddress.city},{" "}
-                    {sale.sales[0].bookingId.buyer.buyerdeliveryAddress.state}
+                    {sale?.sales[0]?.bookingId?.buyer?.buyerdeliveryAddress
+                      ?.city || ""}
+                    ,{" "}
+                    {sale?.sales[0]?.bookingId?.buyer?.buyerdeliveryAddress
+                      ?.state || ""}
                   </p>
                   <p>
                     PIN:{" "}
-                    {sale.sales[0].bookingId.buyer.buyerdeliveryAddress.pinCode}
+                    {sale?.sales[0]?.bookingId?.buyer?.buyerdeliveryAddress
+                      ?.pinCode || "N/A"}
                   </p>
                 </div>
               ))}
@@ -193,37 +184,37 @@ const Invoice = forwardRef(({ sale }, ref) => {
                 <tr>
                   <td className="border px-4 py-2">Invoice No:</td>
                   <td className="border px-4 py-2">
-                    {sale.invoiceNumber || "N/A"}
+                    {sale?.invoiceNumber || "N/A"}
                   </td>
                 </tr>
                 <tr>
                   <td className="border px-4 py-2">Date:</td>
                   <td className="border px-4 py-2">
-                    {formatDate(sale.invoiceDate)}
+                    {formatDate(sale?.invoiceDate)}
                   </td>
                 </tr>
                 <tr>
                   <td className="border px-4 py-2">Challan No.:</td>
                   <td className="border px-4 py-2">
-                    {sale.challanNo || "N/A"}
+                    {sale?.challanNo || "N/A"}
                   </td>
                 </tr>
                 <tr>
                   <td className="border px-4 py-2">Supplier's Ref:</td>
-                  <td className="border px-4 py-2">{sale.supRef || "N/A"}</td>
+                  <td className="border px-4 py-2">{sale?.supRef || "N/A"}</td>
                 </tr>
                 <tr>
                   <td className="border px-4 py-2">Other Reference:</td>
-                  <td className="border px-4 py-2">{sale.otRef || "N/A"}</td>
+                  <td className="border px-4 py-2">{sale?.otRef || "N/A"}</td>
                 </tr>
                 <tr>
                   <td className="border px-4 py-2">Booking No.:</td>
-                  <td className="border px-4 py-2">{sale.ordNo || "N/A"}</td>
+                  <td className="border px-4 py-2">{sale?.ordNo || "N/A"}</td>
                 </tr>
                 <tr>
                   <td className="border px-4 py-2">Transporter:</td>
                   <td className="border px-4 py-2">
-                    {sale.transporterId?.transport || "N/A"}
+                    {sale?.transporterId?.transport || "N/A"}
                   </td>
                 </tr>
               </tbody>
@@ -303,7 +294,7 @@ const Invoice = forwardRef(({ sale }, ref) => {
             above are true.
           </p>
           <p>
-            <strong>Company's PAN:</strong> {organization.fssai || "N/A"}
+            <strong>Company's PAN:</strong> {organization?.fssai || "N/A"}
           </p>
           <p className="italic">
             This is a computer-generated invoice. Date & Time of Printing:{" "}
@@ -311,7 +302,6 @@ const Invoice = forwardRef(({ sale }, ref) => {
           </p>
         </footer>
       </div>
-      ;
     </>
   );
 });

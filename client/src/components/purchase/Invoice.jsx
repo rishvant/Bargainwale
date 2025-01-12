@@ -14,15 +14,15 @@ import {
   toTitleCase,
   roundOff,
 } from "../../utils/helper.js";
-import { API_BASE_URL } from "@/services/api";  
+import { API_BASE_URL } from "@/services/api";
 
-const orgId=localStorage.getItem("organizationId");
+const orgId = localStorage.getItem("organizationId");
 const response = await axios.get(`${API_BASE_URL}/organization/${orgId}`);
 
 const Invoice = forwardRef(({ purchase, organization }, ref) => {
   // console.log(organization);
   // console.log(orgId, response.data);
-  organization=response.data;
+  organization = response.data;
   // console.log(organization);
   // const [prices, setPrices] = useState(null);
 
@@ -30,8 +30,8 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
   // useEffect(() => {
   //   const fetchPrices = async () => {
   //     try {
-  //       const response = await getPricesByWarehouse(purchase.warehouseId._id);
-  //       setPrices(response); 
+  //       const response = await getPricesByWarehouse(purchase.warehouseId?._id);
+  //       setPrices(response);
   //     } catch (error) {
   //       console.error(
   //         "Failed to fetch item prices for the given warehouse",
@@ -53,11 +53,11 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
     let taxPerUnit = 0;
     let totalAmount = 0;
 
-    for(const orderItem of purchase.orderId.items){
-      if(orderItem.item==item.itemId._id){
-        itemPrice=orderItem.baseRate;
-        taxPerUnit = (item.itemId.gst / 100) * itemPrice;
-        totalAmount= quantity * (itemPrice + taxPerUnit);
+    for (const orderItem of purchase.orderId.items) {
+      if (orderItem.item === item.itemId?._id) {
+        itemPrice = orderItem.baseRate;
+        taxPerUnit = (item.itemId?.gst / 100) * itemPrice;
+        totalAmount = quantity * (itemPrice + taxPerUnit);
       }
     }
 
@@ -81,11 +81,11 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
 
     return {
       index: index + 1,
-      description: item.itemId.materialdescription || "N/A",
+      description: item.itemId?.materialdescription || "N/A",
       hsnCode: item.hsnCode || "N/A",
       quantity,
       price: itemPrice.toFixed(2),
-      gst: item.itemId.gst || 0,
+      gst: item.itemId?.gst || 0,
       totalAmount: totalAmount.toFixed(2),
       taxPerUnit: taxPerUnit.toFixed(2),
     };
@@ -104,20 +104,20 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
       allowTaint: true,
       useCORS: true,
       logging: false,
-      height: element.scrollHeight+400,
+      height: element.scrollHeight + 400,
       windowHeight: element.scrollHeight + 400,
     }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", [210, 350]); 
-      const pdfWidth = 210; 
-      const pdfHeight = 297; 
+      const pdf = new jsPDF("p", "mm", [210, 350]);
+      const pdfWidth = 210;
+      const pdfHeight = 297;
 
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
       const aspectRatio = canvasHeight / canvasWidth;
 
-      const imgWidth = pdfWidth - 20; 
-      const imgHeight = imgWidth * aspectRatio ;
+      const imgWidth = pdfWidth - 20;
+      const imgHeight = imgWidth * aspectRatio;
 
       pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
 
@@ -168,29 +168,32 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
         <div className="flex justify-between border-2 px-4 mb-6">
           <section className="flex-2 pr-4">
             <div className="border-b-2 pb-4 text-left">
-              <h2 className="font-bold text-lg">{organization.name}</h2>
-              <p>{purchase.orderId.manufacturer.manufacturer}</p>
+              <h2 className="font-bold text-lg">{organization?.name}</h2>
+              <p>{purchase.orderId?.manufacturer?.manufacturer || "N/A"}</p>
               <p>
-                {purchase.orderId.manufacturer.manufacturerdeliveryAddress
-                  .addressLine1 || ""}
+                {purchase.orderId?.manufacturer?.manufacturerdeliveryAddress
+                  ?.addressLine1 || ""}
               </p>
               <p>
-                {purchase.orderId.manufacturer.manufacturerdeliveryAddress
-                  .addressLine2 || ""}
+                {purchase.orderId?.manufacturer?.manufacturerdeliveryAddress
+                  ?.addressLine2 || ""}
               </p>
               <p>
-                {purchase.orderId.manufacturer.manufacturerdeliveryAddress.city}
+                {
+                  purchase.orderId?.manufacturer?.manufacturerdeliveryAddress
+                    ?.city
+                }
                 ,{" "}
                 {
-                  purchase.orderId.manufacturer.manufacturerdeliveryAddress
-                    .state
+                  purchase.orderId?.manufacturer?.manufacturerdeliveryAddress
+                    ?.state
                 }
               </p>
               <p>
                 PIN:{" "}
                 {
-                  purchase.orderId.manufacturer.manufacturerdeliveryAddress
-                    .pinCode
+                  purchase.orderId?.manufacturer?.manufacturerdeliveryAddress
+                    ?.pinCode
                 }
               </p>
             </div>
@@ -200,6 +203,9 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
                   <h3 className="font-semibold text-lg">
                     {party.charAt(0).toUpperCase() + party.slice(1)}
                   </h3>
+                  <h3 className="font-semibold">
+                    {organization?.name}
+                  </h3>
                   {/* <p>{purchase[party]?.name || "N/A"}</p>
                   <p>{purchase[party]?.address || "N/A"}</p>
                   <p>GSTIN/UIN: {purchase[party]?.gstin || "N/A"}</p>
@@ -207,10 +213,17 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
                     State: {purchase[party]?.state || "N/A"}, Code:{" "}
                     {purchase[party]?.stateCode || "N/A"}
                   </p> */}
-                  <p> {organization.address.line1},</p>
-                  <p> {organization.address.line2},</p>
-                  <p><strong>GSTIN:</strong> {organization.gstin}</p>
-                  <p> {organization.address.city}, {organization.address.state}, {organization.address.pincode}</p>
+                  <p> {organization?.address?.line1},</p>
+                  <p> {organization?.address?.line2},</p>
+                  <p>
+                    <strong>GSTIN:</strong> {organization?.gstin}
+                  </p>
+                  <p>
+                    {" "}
+                    {organization?.address?.city},{" "}
+                    {organization?.address?.state},{" "}
+                    {organization?.address?.pincode}
+                  </p>
                 </div>
               ))}
             </section>
@@ -337,7 +350,7 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
             above are true.
           </p>
           <p>
-            <strong>Company's PAN:</strong> {organization.fssai || "N/A"}
+            <strong>Company's PAN:</strong> {organization?.fssai || "N/A"}
           </p>
           <p className="italic">
             This is a computer-generated invoice. Date & Time of Printing:{" "}

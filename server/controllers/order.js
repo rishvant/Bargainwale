@@ -12,6 +12,7 @@ import { sendEmailWithParams } from "./mail.js";
 const orderController = {
   createOrder: async (req, res) => {
     try {
+      const { remake = false } = req.headers;
       const {
         companyBargainDate,
         items,
@@ -30,6 +31,59 @@ const orderController = {
       if (!Array.isArray(items)) {
         return res.status(400).json({ message: "Items must be an array" });
       }
+
+      if (remake==false) {
+        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+
+        const recentOrders = await Order.find({
+          createdAt: { $gte: fifteenMinutesAgo },
+          organization: organization, 
+          warehouse: warehouseId, 
+        }).lean(); // `.lean()` to return plain JavaScript objects for better performance
+        // console.log(recentOrders);
+        const duplicateOrder = recentOrders.find((order) => {
+          if (order.inco !== inco || order.manufacturer.toString() !== manufacturer) {
+            return false;
+          }
+          const orderItems = order.items.map((item) => {
+            return {
+              itemId: item.item ? item.item.toString() : null, 
+              quantity: item.quantity,
+              baseRate: item.baseRate,
+              pickup: item.pickup,
+            };
+          });
+
+          const requestItems = items.map((item) => {
+            return {
+              itemId: item.itemId.toString(), 
+              quantity: item.quantity,
+              baseRate: item.baseRate,
+              pickup: item.pickup,
+            };
+          });
+
+          orderItems.sort((a, b) => a.itemId.localeCompare(b.itemId));
+          requestItems.sort((a, b) => a.itemId.localeCompare(b.itemId));
+
+          return orderItems.every((orderItem, index) => {
+            const requestItem = requestItems[index];
+            return (
+              orderItem.itemId === requestItem.itemId &&
+              orderItem.quantity === requestItem.quantity &&
+              orderItem.baseRate === requestItem.baseRate &&
+              orderItem.pickup === requestItem.pickup
+            );
+          });
+        });
+        if (duplicateOrder) {
+          return res.status(409).json({
+            message: "An identical order was placed in the last 15 minutes. Would you like to remake the order?",
+            orderDetails: duplicateOrder
+          });
+        }
+      }
+
 
       const orderItems = [];
       let totalAmount = 0;
@@ -144,7 +198,7 @@ const orderController = {
       const { subject, body } = generateOrderEmailContent(order);
 
       const org = await Organization.findById(organization);
-      console.log("----------------------------------",org);
+      // console.log("----------------------------------",org);
 
       const recipient = {
         email: org.email, 

@@ -46,7 +46,7 @@ export const sendEmailWithParams = async (
   transactionDetails}
 ) => {
 
-    console.log(body,subject,recipient,transactionDetails);
+    // console.log(body,subject,recipient,transactionDetails);
   let email;
 
   try {
@@ -65,7 +65,7 @@ export const sendEmailWithParams = async (
       subject,
       html: body,
     };
-    console.log(sender);
+    // console.log(sender);
 
     await sender.sendMail(mailOptions);
 
