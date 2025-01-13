@@ -17,8 +17,12 @@ import {
 import { API_BASE_URL } from "@/services/api";
 
 const orgId = localStorage.getItem("organizationId");
-const response = await axios.get(`${API_BASE_URL}/organization/${orgId}`);
 
+const fetchResponse = async ()=>{
+  const response2 = await axios.get(`${API_BASE_URL}/organization/${orgId}`);
+  return response2;
+}
+const response=fetchResponse();
 const Invoice = forwardRef(({ purchase, organization }, ref) => {
   // console.log(organization);
   // console.log(orgId, response.data);
