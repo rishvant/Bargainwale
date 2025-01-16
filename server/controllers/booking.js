@@ -182,6 +182,7 @@ const bookingController = {
         console.log("waw",emailDetails);
         await sendEmailWithParams(emailDetails);
       }
+      
       await booking.save();
       res
         .status(201)

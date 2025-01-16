@@ -9,21 +9,38 @@ const creditNoteController = {
   createCreditNote: async (req, res) => {
     try {
       const { totalSaleId, items, organization, invoiceDate, transporterId } = req.body;
-     
+
+      // Validate input
+      if (!items || items.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "At least one item must be provided",
+        });
+      }
+
+      for (const item of items) {
+        if (!item.reason) {
+          return res.status(400).json({
+            success: false,
+            message: "Each item must include a reason",
+          });
+        }
+      }
+
+      // Fetch total sale
       const totalSale = await TotalSale.findById(totalSaleId).populate("sales");
       if (!totalSale) {
-        return res.status(404).json({ message: "Total sale not found" });
+        return res.status(404).json({ success: false, message: "Total sale not found" });
       }
 
       const creditNoteNumber = `CN-${Date.now()}`;
-
-
       const creditItems = [];
+
       for (const item of items) {
         const { itemId, quantity, reason } = item;
-        let totalQuantitySold = 0;
 
-     
+        // Calculate the total quantity sold
+        let totalQuantitySold = 0;
         totalSale.sales.forEach((sale) => {
           sale.items.forEach((saleItem) => {
             if (saleItem.itemId.toString() === itemId.toString()) {
@@ -32,20 +49,25 @@ const creditNoteController = {
           });
         });
 
-
         const overbilledQuantity = totalQuantitySold - quantity;
-
 
         if (overbilledQuantity > 0) {
           creditItems.push({
             itemId,
             quantity: overbilledQuantity,
-            reason: reason,
+            reason,
             status: "issued",
           });
 
-
+          // Update the warehouse's billed inventory
           const warehouse = await Warehouse.findOne({ organization });
+          if (!warehouse) {
+            return res.status(404).json({
+              success: false,
+              message: "Warehouse not found for the given organization",
+            });
+          }
+
           const billedItem = warehouse.billedInventory.find(
             (i) => i.item.toString() === itemId.toString()
           );
@@ -57,11 +79,12 @@ const creditNoteController = {
               quantity: overbilledQuantity,
             });
           }
+
           await warehouse.save();
         }
       }
 
-
+      // Create the credit note
       const newCreditNote = new CreditNote({
         totalSaleId,
         items: creditItems,
@@ -73,20 +96,7 @@ const creditNoteController = {
 
       await newCreditNote.save();
 
-
-      creditItems.forEach(async (creditItem) => {
-        await ItemHistory.create({
-          item: creditItem.itemId,
-          quantity: creditItem.quantity,
-          sourceModel: "TotalSale",
-          source: totalSaleId,
-          destinationModel: "Buyer",
-          destination: totalSale.sales[0].buyer._id,
-          reason: creditItem.reason,
-          inventoryType: "Billed",
-          organization,
-        });
-      });
+     
 
       res.status(201).json({
         success: true,
@@ -102,56 +112,75 @@ const creditNoteController = {
     }
   },
 
-
+  
   updateCreditNoteStatus: async (req, res) => {
     try {
       const { creditNoteId } = req.params;
-      const creditNote = await CreditNote.findById(creditNoteId).populate("items.itemId");
+  
+      // Find the credit note by ID
+      const creditNote = await CreditNote.findById(creditNoteId)
+        .populate("items.itemId")
+        .populate("totalSaleId");
+        
       if (!creditNote) {
-        return res.status(404).json({ message: "Credit note not found" });
-      }
-
-
-      if (creditNote.status === "issued") {
-        for (const creditItem of creditNote.items) {
-          const warehouse = await Warehouse.findOne({ organization: creditNote.organization });
-          const billedItem = warehouse.billedInventory.find(
-            (i) => i.item.toString() === creditItem.itemId.toString()
-          );
-          if (billedItem) {
-            billedItem.quantity -= creditItem.quantity;
-          }
-
-
-          const virtualInventoryItem = warehouse.virtualInventory.find(
-            (i) => i.item.toString() === creditItem.itemId.toString()
-          );
-          if (virtualInventoryItem) {
-            virtualInventoryItem.quantity += creditItem.quantity;
-          } else {
-            warehouse.virtualInventory.push({
-              item: creditItem.itemId,
-              quantity: creditItem.quantity,
-            });
-          }
-
-          await warehouse.save();
-        }
-
-        creditNote.status = "settled";
-        await creditNote.save();
-
-        res.status(200).json({
-          success: true,
-          message: "Credit note status updated to settled",
-          data: creditNote,
+        return res.status(404).json({
+          success: false,
+          message: "Credit note not found",
         });
-      } else {
-        res.status(400).json({
+      }
+  
+      // Check if the credit note is already settled
+      if (creditNote.status === "settled") {
+        return res.status(400).json({
           success: false,
           message: "Credit note is already settled",
         });
       }
+  
+      // Loop through items in the credit note and update the warehouse inventory
+      for (const creditItem of creditNote.items) {
+        const warehouse = await Warehouse.findOne({ organization: creditNote.organization });
+        if (!warehouse) {
+          return res.status(404).json({
+            success: false,
+            message: "Warehouse not found for the organization",
+          });
+        }
+  
+        // Update billed inventory
+        const billedItem = warehouse.billedInventory.find(
+          (i) => i.item.toString() === creditItem.itemId._id.toString()
+        );
+        if (billedItem) {
+          billedItem.quantity -= creditItem.quantity;
+        }
+  
+        // Update virtual inventory
+        const virtualInventoryItem = warehouse.virtualInventory.find(
+          (i) => i.item.toString() === creditItem.itemId._id.toString()
+        );
+        if (virtualInventoryItem) {
+          virtualInventoryItem.quantity += creditItem.quantity;
+        } else {
+          warehouse.virtualInventory.push({
+            item: creditItem.itemId._id,
+            quantity: creditItem.quantity,
+          });
+        }
+  
+        // Save the warehouse after inventory adjustments
+        await warehouse.save();
+      }
+  
+      // Mark the credit note as settled
+      creditNote.status = "settled";
+      await creditNote.save();
+  
+      res.status(200).json({
+        success: true,
+        message: "Credit note status updated to settled",
+        data: creditNote,
+      });
     } catch (error) {
       res.status(500).json({
         success: false,
@@ -160,6 +189,7 @@ const creditNoteController = {
       });
     }
   },
+  
   getAllCreditNotesForOrganization: async (req, res) => {
     try {
       const creditNotes = await CreditNote.find({ organization: req.params.orgId })
