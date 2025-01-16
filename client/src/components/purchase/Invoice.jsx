@@ -24,7 +24,7 @@ const fetchResponse = async ()=>{
 }
 const response=fetchResponse();
 const Invoice = forwardRef(({ purchase, organization }, ref) => {
-  // console.log(organization);
+  // console.log(purchase);
   // console.log(orgId, response.data);
   organization = response.data;
   // console.log(organization);
@@ -101,8 +101,9 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
   };
 
   // Handle download as PDF
-  const handleDownloadPDF = () => {
-    const element = document.querySelector(".invoice-container");
+  const handleDownloadPDF = (purchaseId) => {
+    // const element = document.querySelector(".invoice-container");
+    const element = document.getElementById(purchaseId);
     element.style.visibility = "visible";
     html2canvas(element, {
       allowTaint: true,
@@ -138,12 +139,12 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
   return (
     <>
       <button
-        onClick={handleDownloadPDF}
+        onClick={()=> handleDownloadPDF(purchase._id)}
         className="bg-blue-500 text-white py-2 px-4 rounded mb-4 h-20"
       >
         Download as PDF
       </button>
-      <div className="invoice-container max-w-3xl bg-white mx-auto p-6 shadow-lg border border-gray-300 overflow-auto max-h-[90vh]">
+      <div id={purchase._id} className={`${purchase._id} invoice-container max-w-3xl bg-white mx-auto p-6 shadow-lg border border-gray-300 overflow-auto max-h-[90vh]`}>
         <h1 className="text-2xl font-bold text-center">Tax Invoice</h1>
         <header className="flex justify-between border-b-2 pb-2 mb-6">
           <div className="flex flex-col items-start space-y-2">
@@ -207,9 +208,7 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
                   <h3 className="font-semibold text-lg">
                     {party.charAt(0).toUpperCase() + party.slice(1)}
                   </h3>
-                  <h3 className="font-semibold">
-                    {organization?.name}
-                  </h3>
+                  <h3 className="font-semibold">{organization?.name}</h3>
                   {/* <p>{purchase[party]?.name || "N/A"}</p>
                   <p>{purchase[party]?.address || "N/A"}</p>
                   <p>GSTIN/UIN: {purchase[party]?.gstin || "N/A"}</p>
@@ -335,7 +334,7 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
           </p>
           <p>
             <strong>Round Off:</strong> ₹
-            {roundOff2(grandTotal - Math.round(grandTotal))}
+            {roundOff2(grandTotal - Math.round(grandTotal))*-1}
           </p>
           <p>
             <strong>Grand Total:</strong> ₹{grandTotal.toFixed(0)}

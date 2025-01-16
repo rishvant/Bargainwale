@@ -15,7 +15,7 @@ import excel from "../../assets/excel.svg";
 import { deleteBooking, getBookings } from "@/services/bookingService";
 import { getSales } from "@/services/salesService";
 import { FaFilter, FaDownload } from "react-icons/fa";
-import Invoice from "@/components/sales/SalesInvoice";
+import SalesInvoice from "@/components/sales/SalesInvoice";
 
 export default function PurchaseHistory() {
   const [sales, setSales] = useState([]);
@@ -161,10 +161,10 @@ export default function PurchaseHistory() {
     setOpenSale(openSale === saleId ? null : saleId);
   };
 
-  const handleDownloadClick = () => {
+  const handleDownloadClick = (sale) => {
     setShowInvoice(true);
     if (invoiceRef.current) {
-      invoiceRef.current.handleDownloadPDF();
+      invoiceRef.current.handleDownloadPDF(sale._id);
     }
     setShowInvoice(false);
   };
@@ -312,7 +312,7 @@ export default function PurchaseHistory() {
                             </Tooltip>
                             <Tooltip content="Download Invoice">
                               <div className="flex items-center justify-center">
-                                <button onClick={handleDownloadClick}>
+                                <button onClick={() => handleDownloadClick(sale)}>
                                   <FaDownload className="text-[1.2rem]" />
                                 </button>
                                 <div
@@ -323,10 +323,7 @@ export default function PurchaseHistory() {
                                     left: "-9999px",
                                   }}
                                 >
-                                  <Invoice
-                                    ref={invoiceRef}
-                                    sale={sale}
-                                  />
+                                  <SalesInvoice ref={invoiceRef} sale={sale} />
                                 </div>
                               </div>
                             </Tooltip>

@@ -61,10 +61,10 @@ export default function PurchaseHistory() {
     }
   };
 
-  const handleDownloadClick = () => {
+  const handleDownloadClick = (purchase) => {
     setShowInvoice(true);
     if (invoiceRef.current) {
-      invoiceRef.current.handleDownloadPDF();
+      invoiceRef.current.handleDownloadPDF(purchase._id);
     }
     setShowInvoice(false);
   };
@@ -345,7 +345,7 @@ export default function PurchaseHistory() {
                               <FaDownload className="icon-class" />
                             </PDFDownloadLink>  */}
                               <div className="flex items-center justify-center">
-                                <button onClick={handleDownloadClick}>
+                                <button onClick={()=> handleDownloadClick(purchase)}>
                                   <FaDownload className="text-[1.2rem]" />
                                 </button>
                                 <div

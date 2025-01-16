@@ -23,7 +23,7 @@ const fetchResponse = async () => {
 };
 const response = fetchResponse();
 
-const Invoice = forwardRef(({ sale }, ref) => {
+const SalesInvoice = forwardRef(({ sale }, ref) => {
   const [items, setItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
   const [totalTax, setTotalTax] = useState(0);
@@ -79,8 +79,8 @@ const Invoice = forwardRef(({ sale }, ref) => {
     return Math.round(value * 100) / 100;
   };
 
-  const handleDownloadPDF = () => {
-    const element = document.querySelector(".invoice-container");
+  const handleDownloadPDF = (saleId) => {
+    const element = document.getElementById(saleId);
     element.style.visibility = "visible";
     html2canvas(element, {
       allowTaint: true,
@@ -116,12 +116,12 @@ const Invoice = forwardRef(({ sale }, ref) => {
   return (
     <>
       <button
-        onClick={handleDownloadPDF}
+        onClick={()=> handleDownloadPDF(sale._id)}
         className="bg-blue-500 text-white py-2 px-4 rounded mb-4 h-20"
       >
         Download as PDF
       </button>
-      <div className="invoice-container max-w-3xl bg-white mx-auto p-6 shadow-lg border border-gray-300 overflow-auto max-h-[90vh]">
+      <div id={sale._id} className={`${sale._id} invoice-container max-w-3xl bg-white mx-auto p-6 shadow-lg border border-gray-300 overflow-auto max-h-[90vh]`}>
         <h1 className="text-2xl font-bold text-center">Tax Invoice</h1>
         <header className="flex justify-between border-b-2 pb-2 mb-6">
           <div className="flex flex-col items-start space-y-2">
@@ -310,4 +310,4 @@ const Invoice = forwardRef(({ sale }, ref) => {
   );
 });
 
-export default Invoice;
+export default SalesInvoice;
