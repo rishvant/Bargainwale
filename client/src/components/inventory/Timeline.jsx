@@ -291,7 +291,7 @@ const Timeline = () => {
           <div className="space-y-4">
             {filteredHistory.length > 0 ? (
               filteredHistory?.map((item, index) => {
-                const date = new Date(item.createdAt).toLocaleDateString(
+                const date = new Date(item.createdAt)?.toLocaleDateString(
                   "en-US",
                   {
                     year: "numeric",
@@ -300,7 +300,7 @@ const Timeline = () => {
                   }
                 );
 
-                const time = new Date(item.createdAt).toLocaleTimeString(
+                const time = new Date(item.createdAt)?.toLocaleTimeString(
                   "en-US",
                   {
                     hour: "2-digit",
@@ -345,13 +345,13 @@ const Timeline = () => {
                                 </span>
                                 <span className="text-sm text-gray-500">
                                   {item.sourceModel === "Manufacturer" ? (
-                                    <span>{item.source.manufacturer}</span>
+                                    <span>{item.source?.manufacturer}</span>
                                   ) : item.sourceModel === "Order" ? (
-                                    <span>{item.source.companyBargainNo}</span>
+                                    <span>{item.source?.companyBargainNo}</span>
                                   ) : item.sourceModel === "Warehouse" ? (
-                                    <span>{item.source.name}</span>
+                                    <span>{item.source?.name}</span>
                                   ) : (
-                                    <span>{item.source.BargainNo}</span>
+                                    <span>{item.source?.BargainNo}</span>
                                   )}
                                 </span>
                               </div>
@@ -369,9 +369,9 @@ const Timeline = () => {
                                 </span>
                                 <span className="text-sm text-gray-500">
                                   {item.destinationModel === "Warehouse" ? (
-                                    <span>{item.destination.name}</span>
+                                    <span>{item.destination?.name}</span>
                                   ) : (
-                                    <span>{item.destination.buyer}</span>
+                                    <span>{item.destination?.buyer}</span>
                                   )}
                                 </span>
                               </div>
@@ -384,8 +384,8 @@ const Timeline = () => {
                             <div className="flex items-center text-gray-600">
                               <Truck className="w-4 h-4 mr-2" />
                               Pickup:{" "}
-                              {String(item.pickup).charAt(0).toUpperCase() +
-                                String(item.pickup).slice(1)}
+                              {String(item.pickup)?.charAt(0).toUpperCase() +
+                                String(item.pickup)?.slice(1)}
                             </div>
                           )}
 
