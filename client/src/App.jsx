@@ -28,6 +28,7 @@ import "react-phone-number-input/style.css";
 import Timeline from "./components/inventory/Timeline";
 import CreateCN from "./pages/creditNote/CreateCN";
 import { CNHistory } from "@/pages/creditNote/CNHistory";
+import Subscriptions from "./pages/dashboard/Subscriptions";
 
 const App = () => {
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1250);
@@ -108,6 +109,7 @@ const App = () => {
                 />
                 <Route path="/credit-note/create" element={<CreateCN />} />
                 <Route path="/credit-note/history" element={<CNHistory />} />
+                <Route path="/subscriptions" element={<Subscriptions />} />
               </Routes>
             </div>
           </div>

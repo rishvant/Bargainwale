@@ -4,7 +4,9 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaSignOutAlt,
+  FaCreditCard,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const UserProfileDropdown = ({ user, handleOnClick, signOut }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -103,6 +105,14 @@ const UserProfileDropdown = ({ user, handleOnClick, signOut }) => {
               <FaSignOutAlt className="inline mr-2" />
               Logout
             </button>
+            <Link
+              to="/subscriptions"
+              className="block w-full text-left px-4 py-2 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 text-gray-700"
+              role="menuitem"
+            >
+              <FaCreditCard className="inline mr-2" />
+              My Subscription
+            </Link>
           </div>
         </div>
       )}
