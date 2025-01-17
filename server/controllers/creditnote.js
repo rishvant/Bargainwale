@@ -5,7 +5,7 @@ import Sale from "../models/sale.js";
 import ItemHistory from "../models/itemHistory.js";
 
 const creditNoteController = {
-  
+
   createCreditNote: async (req, res) => {
     try {
       const { totalSaleId, items, organization, invoiceDate, transporterId } = req.body;
@@ -96,7 +96,7 @@ const creditNoteController = {
 
       await newCreditNote.save();
 
-     
+
 
       res.status(201).json({
         success: true,
@@ -112,23 +112,23 @@ const creditNoteController = {
     }
   },
 
-  
+
   updateCreditNoteStatus: async (req, res) => {
     try {
       const { creditNoteId } = req.params;
-  
+
       // Find the credit note by ID
       const creditNote = await CreditNote.findById(creditNoteId)
         .populate("items.itemId")
         .populate("totalSaleId");
-        
+
       if (!creditNote) {
         return res.status(404).json({
           success: false,
           message: "Credit note not found",
         });
       }
-  
+
       // Check if the credit note is already settled
       if (creditNote.status === "settled") {
         return res.status(400).json({
@@ -136,7 +136,7 @@ const creditNoteController = {
           message: "Credit note is already settled",
         });
       }
-  
+
       // Loop through items in the credit note and update the warehouse inventory
       for (const creditItem of creditNote.items) {
         const warehouse = await Warehouse.findOne({ organization: creditNote.organization });
@@ -146,7 +146,7 @@ const creditNoteController = {
             message: "Warehouse not found for the organization",
           });
         }
-  
+
         // Update billed inventory
         const billedItem = warehouse.billedInventory.find(
           (i) => i.item.toString() === creditItem.itemId._id.toString()
@@ -154,7 +154,7 @@ const creditNoteController = {
         if (billedItem) {
           billedItem.quantity -= creditItem.quantity;
         }
-  
+
         // Update virtual inventory
         const virtualInventoryItem = warehouse.virtualInventory.find(
           (i) => i.item.toString() === creditItem.itemId._id.toString()
@@ -167,15 +167,15 @@ const creditNoteController = {
             quantity: creditItem.quantity,
           });
         }
-  
+
         // Save the warehouse after inventory adjustments
         await warehouse.save();
       }
-  
+
       // Mark the credit note as settled
       creditNote.status = "settled";
       await creditNote.save();
-  
+
       res.status(200).json({
         success: true,
         message: "Credit note status updated to settled",
@@ -189,12 +189,13 @@ const creditNoteController = {
       });
     }
   },
-  
+
   getAllCreditNotesForOrganization: async (req, res) => {
     try {
       const creditNotes = await CreditNote.find({ organization: req.params.orgId })
-        .populate("items.itemId") // Assuming you want to populate item details
-        .populate("totalSaleId"); // Populate the total sale if needed
+        .populate("items.itemId")
+        .populate("totalSaleId")
+        .populate("transporterId");
 
       res.status(200).json({
         success: true,
@@ -212,8 +213,9 @@ const creditNoteController = {
   getCreditNoteById: async (req, res) => {
     try {
       const creditNote = await CreditNote.findById(req.params.creditNoteId)
-        .populate("items.itemId") 
-        .populate("totalSaleId"); 
+        .populate("items.itemId")
+        .populate("totalSaleId")
+        .populate("transporterId");
 
       if (!creditNote) {
         return res.status(404).json({

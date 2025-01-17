@@ -16,7 +16,6 @@ import { getBookings } from "@/services/bookingService";
 // icons
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import excel from "../../assets/excel.svg";
-import { MdDeleteOutline } from "react-icons/md";
 
 export function OrderHistory() {
   const [orders, setOrders] = useState([]);
@@ -195,21 +194,6 @@ export function OrderHistory() {
     toast.success("Order history downloaded successfully!");
   };
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to permanently delete this order?"
-    );
-    if (!confirmDelete) return;
-
-    try {
-      await deleteOrder(id);
-      fetchOrders();
-      toast.error("Order Deleted");
-    } catch (err) {
-      console.log("Error:", err);
-    }
-  };
-
   return (
     <div className="p-8 bg-gray-50 min-h-full">
       <div className="mb-4 flex justify-between items-center">
@@ -340,16 +324,6 @@ export function OrderHistory() {
                               <ChevronDownIcon className="h-5 w-5 text-gray-600" />
                             )}
                           </IconButton>
-                          {!hasFutureBookings(order, bookings) && (
-                            <Tooltip content="Delete Order">
-                              <span className="w-fit h-fit">
-                                <MdDeleteOutline
-                                  onClick={() => handleDelete(order._id)}
-                                  className="text-red-700 text-[2.4rem] border-2 border-red-700 rounded-lg p-1 hover:bg-red-700 hover:text-white transition-all cursor-pointer"
-                                />
-                              </span>
-                            </Tooltip>
-                          )}
                         </div>
                       </td>
                     </tr>

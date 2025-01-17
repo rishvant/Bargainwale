@@ -14,6 +14,7 @@ import {
   BarChart,
   ChevronDown,
   Percent,
+  Receipt,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -173,6 +174,14 @@ const ModernNavbar = () => {
         { name: "Sales Analytics", to: "/sales/analytics", icon: BarChart },
       ],
       icon: LineChart,
+    },
+    {
+      label: "Credit Note",
+      links: [
+        { name: "Create CN", to: "/credit-note/create", icon: Plus },
+        { name: "CN History", to: "/credit-note/history", icon: History },
+      ],
+      icon: Receipt,
     },
   ];
 

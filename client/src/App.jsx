@@ -26,6 +26,8 @@ import Documentation from "@/components/documentation/Documentation"; // Import 
 import DiscountApprovalPage from "./pages/booking/DiscountApproval";
 import "react-phone-number-input/style.css";
 import Timeline from "./components/inventory/Timeline";
+import CreateCN from "./pages/creditNote/CreateCN";
+import { CNHistory } from "@/pages/creditNote/CNHistory";
 
 const App = () => {
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1250);
@@ -104,6 +106,8 @@ const App = () => {
                   path="*"
                   element={<Navigate to="/dashboard" replace />}
                 />
+                <Route path="/credit-note/create" element={<CreateCN />} />
+                <Route path="/credit-note/history" element={<CNHistory />} />
               </Routes>
             </div>
           </div>
