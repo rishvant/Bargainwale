@@ -2,6 +2,7 @@ import Price from "../models/itemprice.js";
 import Warehouse from "../models/warehouse.js";
 import Item from "../models/items.js";
 import PriceHistory from "../models/pricehistory.js";
+import Organization from "../models/organization.js";
 
 const priceController = {
   addOrUpdatePrice: async (req, res) => {
@@ -173,27 +174,39 @@ const priceController = {
       const { orgId, warehouseId } = req.params;
       const { itemId } = req.query;
 
-      // Base query
-      const query = { warehouse: warehouseId, organization: orgId };
-      if (itemId) {
-        query.item = itemId; // Filter by item if itemId is provided
+      const organization = await Organization.findOne({
+        clerkOrganizationId: orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
       }
 
-      // Fetch price history
+      // Base query
+      const query = {
+        warehouse: warehouseId,
+        organization: organization._id
+      };
+      if (itemId) {
+        query.item = itemId;
+      }
+
       const priceHistory = await PriceHistory.find(query)
         .populate("item", "flavor material")
         .populate("warehouse", "name location")
         .sort({ effectiveDate: -1 });
 
       if (!priceHistory.length) {
-        return res
-          .status(404)
-          .json({ message: "No price history found for the specified warehouse and/or item" });
+        return res.status(404).json({
+          message: "No price history found for the specified warehouse and/or item"
+        });
       }
 
-      res.status(200).json({ message: "Price history retrieved successfully", priceHistory });
+      res.status(200).json({
+        message: "Price history retrieved successfully",
+        priceHistory
+      });
     } catch (error) {
-      console.error("Error retrieving price history:", error);
       res.status(500).json({ message: "Server error", error });
     }
   },

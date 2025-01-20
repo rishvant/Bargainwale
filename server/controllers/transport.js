@@ -1,4 +1,5 @@
 import Transport from '../models/transport.js';
+import Organization from '../models/organization.js';
 
 const transportController = {
   // Create a new transport
@@ -24,7 +25,15 @@ const transportController = {
   // Get all transports
   getAllTransports: async (req, res) => {
     try {
-      const transports = await Transport.find({ organization: req.params.orgId });
+      const organization = await Organization.findOne({
+        clerkOrganizationId: req.params.orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const transports = await Transport.find({ organization: organization._id });
       res.status(200).json(transports);
     } catch (error) {
       res.status(500).json({ message: 'Error retrieving transports', error });
@@ -35,7 +44,19 @@ const transportController = {
   getTransportById: async (req, res) => {
     try {
       const { id, orgId } = req.params;
-      const transport = await Transport.findOne({ _id: id, organization: orgId });
+      const organization = await Organization.findOne({
+        clerkOrganizationId: orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const transport = await Transport.findOne({
+        _id: id,
+        organization: organization._id
+      });
+
       if (!transport) {
         return res.status(404).json({ message: 'Transport not found' });
       }

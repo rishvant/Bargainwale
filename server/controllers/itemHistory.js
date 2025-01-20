@@ -1,10 +1,19 @@
 import mongoose from "mongoose";
 import ItemHistory from "../models/itemHistory.js";
+import Organization from "../models/organization.js";
 
 const itemHistoryController = {
     getAllItemHistory: async (req, res) => {
         try {
-            const itemHistories = await ItemHistory.find({ organization: req.params.orgId })
+            const organization = await Organization.findOne({
+                clerkOrganizationId: req.params.orgId
+            });
+
+            if (!organization) {
+                return res.status(404).json({ message: "Organization not found" });
+            }
+
+            const itemHistories = await ItemHistory.find({ organization: organization._id })
                 .populate("item");
 
             res.status(200).json({
@@ -22,6 +31,13 @@ const itemHistoryController = {
     getItemHistoryById: async (req, res) => {
         try {
             const { id, orgId } = req.params;
+            const organization = await Organization.findOne({
+                clerkOrganizationId: orgId
+            });
+
+            if (!organization) {
+                return res.status(404).json({ message: "Organization not found" });
+            }
 
             if (!mongoose.Types.ObjectId.isValid(id)) {
                 return res.status(400).json({
@@ -30,14 +46,10 @@ const itemHistoryController = {
                 });
             }
 
-            if (!mongoose.Types.ObjectId.isValid(orgId)) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Invalid organization ID format.",
-                });
-            }
-
-            const itemHistories = await ItemHistory.find({ item: id, organization: orgId })
+            const itemHistories = await ItemHistory.find({
+                item: id,
+                organization: organization._id
+            })
                 .populate("item");
 
             if (!itemHistories.length) {
@@ -70,6 +82,14 @@ const itemHistoryController = {
         try {
             const { id, orgId, pickup, inventory } = req.params;
 
+            const organization = await Organization.findOne({
+                clerkOrganizationId: orgId
+            });
+
+            if (!organization) {
+                return res.status(404).json({ message: "Organization not found" });
+            }
+
             if (!mongoose.Types.ObjectId.isValid(id)) {
                 return res.status(400).json({
                     success: false,
@@ -77,16 +97,9 @@ const itemHistoryController = {
                 });
             }
 
-            if (!mongoose.Types.ObjectId.isValid(orgId)) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Invalid organization ID format.",
-                });
-            }
-
             const query = {
                 item: id,
-                organization: orgId,
+                organization: organization._id,
                 inventoryType: inventory
             };
 

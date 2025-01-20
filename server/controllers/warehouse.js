@@ -1,5 +1,6 @@
 import Warehouse from "../models/warehouse.js";
 import mongoose from "mongoose";
+import Organization from "../models/organization.js";
 
 const warehouseController = {
   createWarehouse: async (req, res) => {
@@ -34,7 +35,15 @@ const warehouseController = {
   },
   getAllWarehouses: async (req, res) => {
     try {
-      const warehouses = await Warehouse.find({ organization: req.params.orgId })
+      const organization = await Organization.findOne({
+        clerkOrganizationId: req.params.orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const warehouses = await Warehouse.find({ organization: organization._id })
         .populate("virtualInventory.item")
         .populate("billedInventory.item")
         .populate("soldInventory.item");
@@ -71,7 +80,18 @@ const warehouseController = {
   getWarehouseById: async (req, res) => {
     try {
       const { id, orgId } = req.params;
-      const warehouse = await Warehouse.findOne({ _id: id, organization: orgId })
+      const organization = await Organization.findOne({
+        clerkOrganizationId: orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const warehouse = await Warehouse.findOne({
+        _id: id,
+        organization: organization._id
+      })
         .populate("virtualInventory.item")
         .populate("billedInventory.item")
         .populate("soldInventory.item");
@@ -79,7 +99,6 @@ const warehouseController = {
       if (!warehouse) {
         return res.status(404).json({ message: "Warehouse not found" });
       }
-
       res.status(200).json(warehouse);
     } catch (error) {
       res.status(500).json({ message: "Error retrieving warehouse", error });

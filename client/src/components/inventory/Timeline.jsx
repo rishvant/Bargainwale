@@ -24,7 +24,7 @@ const Timeline = () => {
   const [item, setItem] = useState({});
   const [history, setHistory] = useState([]);
   const { id, inventory, pickup } = useParams();
-  const orgId = localStorage.getItem("organizationId");
+  const orgId = localStorage.getItem("clerk_active_org");
 
   const fetchItem = async () => {
     setItemLoading(true);

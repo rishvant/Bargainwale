@@ -1,4 +1,5 @@
 import Buyer from "../models/buyer.js";
+import Organization from "../models/organization.js";
 
 const buyerController = {
   createBuyer: async (req, res) => {
@@ -34,7 +35,15 @@ const buyerController = {
 
   getAllBuyers: async (req, res) => {
     try {
-      const buyers = await Buyer.find({ organization: req.params.orgId });
+      const organization = await Organization.findOne({
+        clerkOrganizationId: req.params.orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const buyers = await Buyer.find({ organization: organization._id });
       res.status(200).json(buyers);
     } catch (error) {
       res.status(500).json({ message: "Error retrieving buyers", error });
@@ -44,7 +53,19 @@ const buyerController = {
   getBuyerById: async (req, res) => {
     try {
       const { id, orgId } = req.params;
-      const buyer = await Buyer.findOne({ _id: id, organization: orgId });
+      const organization = await Organization.findOne({
+        clerkOrganizationId: orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const buyer = await Buyer.findOne({
+        _id: id,
+        organization: organization._id
+      });
+
       if (!buyer) {
         return res.status(404).json({ message: "Buyer not found" });
       }

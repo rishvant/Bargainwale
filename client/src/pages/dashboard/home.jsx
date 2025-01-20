@@ -22,6 +22,7 @@ import excel from "../../assets/excel.svg";
 // components
 import StatisticsCards from "@/components/home/StatisticsCards";
 import PriceChart from "@/components/home/PriceChart";
+import Loader from "@/components/Loaders/MainLoader";
 
 export default function Home() {
   const [warehouseOptions, setWarehouseOptions] = useState([]);
@@ -32,9 +33,9 @@ export default function Home() {
   const [form, setForm] = useState([]);
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
 
   const { organization } = useOrganization();
-  const isOrganizationLoaded = localStorage.getItem("organizationId");
 
   const fetchWarehouseOptions = async () => {
     try {
@@ -48,6 +49,8 @@ export default function Home() {
     } catch (error) {
       toast.error("Error fetching warehouses!");
       console.error(error);
+    } finally {
+      setPageLoading(false);
     }
   };
 
@@ -93,19 +96,19 @@ export default function Home() {
 
   useEffect(() => {
     fetchWarehouseOptions();
-  }, [isOrganizationLoaded]);
+  }, []);
 
   useEffect(() => {
     if (selectedWarehouse) {
       fetchPricesForWarehouse(selectedWarehouse);
     }
-  }, [selectedWarehouse, isOrganizationLoaded]);
+  }, [selectedWarehouse]);
 
   useEffect(() => {
     if (selectedHistoryWarehouse) {
       fetchPricesForHistory(selectedHistoryWarehouse);
     }
-  }, [selectedHistoryWarehouse, isOrganizationLoaded]);
+  }, [selectedHistoryWarehouse]);
 
   const handleInputChange = (index, event) => {
     const { name, value } = event.target;
@@ -219,14 +222,6 @@ export default function Home() {
     }).format(date);
   };
 
-  useEffect(() => {
-    const isFirstLoad = localStorage.getItem("isFirstLoad");
-    if (!isFirstLoad) {
-      localStorage.setItem("isFirstLoad", "true");
-      window.location.reload();
-    }
-  }, []);
-
   const handleLockToggle = (index) => {
     const updatedForm = [...form];
     updatedForm[index].locked = !updatedForm[index].locked;
@@ -267,6 +262,10 @@ export default function Home() {
     );
     toast.success("Data downloaded successfully!");
   };
+
+  if (pageLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="mt-8 px-12">

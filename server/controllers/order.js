@@ -32,13 +32,13 @@ const orderController = {
         return res.status(400).json({ message: "Items must be an array" });
       }
 
-      if (remake==false) {
+      if (remake == false) {
         const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
 
         const recentOrders = await Order.find({
           createdAt: { $gte: fifteenMinutesAgo },
-          organization: organization, 
-          warehouse: warehouseId, 
+          organization: organization,
+          warehouse: warehouseId,
         }).lean(); // `.lean()` to return plain JavaScript objects for better performance
         // console.log(recentOrders);
         const duplicateOrder = recentOrders.find((order) => {
@@ -47,7 +47,7 @@ const orderController = {
           }
           const orderItems = order.items.map((item) => {
             return {
-              itemId: item.item ? item.item.toString() : null, 
+              itemId: item.item ? item.item.toString() : null,
               quantity: item.quantity,
               baseRate: item.baseRate,
               pickup: item.pickup,
@@ -56,7 +56,7 @@ const orderController = {
 
           const requestItems = items.map((item) => {
             return {
-              itemId: item.itemId.toString(), 
+              itemId: item.itemId.toString(),
               quantity: item.quantity,
               baseRate: item.baseRate,
               pickup: item.pickup,
@@ -201,7 +201,7 @@ const orderController = {
       // console.log("----------------------------------",org);
 
       const recipient = {
-        email: org.email, 
+        email: org.email,
         name: org.name,
       };
 
@@ -232,10 +232,19 @@ const orderController = {
 
   getAllOrders: async (req, res) => {
     try {
-      const orders = await Order.find({ organization: req.params.orgId })
-        .populate('items.item')
-        .populate('warehouse')
-        .populate('manufacturer');
+      const organization = await Organization.findOne({
+        clerkOrganizationId: req.params.orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const orders = await Order.find({ organization: organization._id })
+        .populate("items.item")
+        .populate("warehouse")
+        .populate("manufacturer");
+
       res.status(200).json(orders);
     } catch (error) {
       res.status(500).json({ message: "Error retrieving orders", error });
@@ -245,10 +254,21 @@ const orderController = {
   getOrderById: async (req, res) => {
     try {
       const { id, orgId } = req.params;
-      const order = await Order.findOne({ _id: id, organization: orgId })
-        .populate('items.item')
-        .populate('warehouse')
-        .populate('manufacturer');
+      const organization = await Organization.findOne({
+        clerkOrganizationId: orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const order = await Order.findOne({
+        _id: id,
+        organization: organization._id
+      })
+        .populate("items.item")
+        .populate("warehouse")
+        .populate("manufacturer");
 
       if (!order) {
         return res.status(404).json({ message: "Order not found" });

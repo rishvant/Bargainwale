@@ -312,7 +312,9 @@ export default function PurchaseHistory() {
                             </Tooltip>
                             <Tooltip content="Download Invoice">
                               <div className="flex items-center justify-center">
-                                <button onClick={() => handleDownloadClick(sale)}>
+                                <button
+                                  onClick={() => handleDownloadClick(sale)}
+                                >
                                   <FaDownload className="text-[1.2rem]" />
                                 </button>
                                 <div

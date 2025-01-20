@@ -1,12 +1,13 @@
 import TotalSale from "../models/totalsale.js";
 import Sale from "../models/sale.js";
+import Organization from "../models/organization.js";
 
 const totalSaleController = {
   // Create a new TotalSale or update an existing one by adding sales
   createTotalSale: async (req, res) => {
     try {
       const { saleIds, organization, totalAmount, invoiceDate, invoiceNumber, transporterId } = req.body;
-  
+
       // Validate the sales exist
       const sales = await Sale.find({ _id: { $in: saleIds } });
       if (sales.length !== saleIds.length) {
@@ -15,10 +16,9 @@ const totalSaleController = {
           message: "Some sales do not exist",
         });
       }
-  
+
       // Ensure no TotalSale exists for this organization already
-      
-  
+
       // Create a new TotalSale
       const totalSale = new TotalSale({
         sales: saleIds,
@@ -28,9 +28,9 @@ const totalSaleController = {
         invoiceNumber,
         transporterId,
       });
-  
+
       await totalSale.save();
-  
+
       res.status(201).json({
         success: true,
         message: "Total sale created successfully",
@@ -44,12 +44,18 @@ const totalSaleController = {
       });
     }
   },
-  
+
   getAllTotalSales: async (req, res) => {
     try {
-      const totalSales = await TotalSale.find({
-        organization: req.params.orgId,
-      })
+      const organization = await Organization.findOne({
+        clerkOrganizationId: req.params.orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const totalSales = await TotalSale.find({ organization: organization._id })
         .populate({
           path: "sales",
           populate: [
@@ -72,13 +78,12 @@ const totalSaleController = {
             },
             {
               path: "items.itemId",
-              select:
-                "name material flavor weights hsnCode materialdescription gst",
-            },
+              select: "name material flavor weights",
+            }
           ],
         })
         .populate("transporterId");
-  
+
       res.status(200).json({
         success: true,
         data: totalSales,
@@ -91,7 +96,7 @@ const totalSaleController = {
       });
     }
   },
-  
+
 
   getTotalSaleById: async (req, res) => {
     try {
@@ -102,7 +107,7 @@ const totalSaleController = {
             {
               path: "warehouseId",
               populate: {
-                path: "warehouseManager", 
+                path: "warehouseManager",
               },
             },
             {
@@ -120,19 +125,19 @@ const totalSaleController = {
               path: "items.itemId",
               select: "name material flavor weights",
             }
-           
+
           ],
         })
         .populate("transporterId");
-        
-  
+
+
       if (!totalSale) {
         return res.status(404).json({
           success: false,
           message: "Total sale not found",
         });
       }
-  
+
       res.status(200).json({
         success: true,
         data: totalSale,
@@ -145,7 +150,7 @@ const totalSaleController = {
       });
     }
   },
-  
+
 
   deleteTotalSale: async (req, res) => {
     try {

@@ -232,17 +232,18 @@ const purchaseController = {
   },
   getAllPurchases: async (req, res) => {
     try {
-      const purchases = await Purchase.find({ organization: req.params.orgId })
+      const organization = await Organization.findOne({
+        clerkOrganizationId: req.params.orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const purchases = await Purchase.find({ organization: organization._id })
+        .populate("items.itemId")
         .populate("warehouseId")
-        .populate("transporterId")
-        .populate({
-          path: "orderId",
-          populate: [
-            { path: "manufacturer" }, // Populates the manufacturer field in orderId
-            { path: "warehouse" }, // Populates the warehouse field in orderId
-          ],
-        })
-        .populate("items.itemId"); // Populates the itemId field in items array
+        .populate("orderId");
 
       res.status(200).json({
         success: true,
@@ -260,19 +261,25 @@ const purchaseController = {
   getPurchaseById: async (req, res) => {
     try {
       const { id, orgId } = req.params;
-      const purchase = await Purchase.findOne({ _id: id, organization: orgId })
-        .populate("warehouseId")
-        .populate("transporterId")
-        .populate("orderId")
-        .populate("items");
+      const organization = await Organization.findOne({
+        clerkOrganizationId: orgId
+      });
 
-      if (!purchase) {
-        return res.status(404).json({
-          success: false,
-          message: "Purchase not found",
-        });
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
       }
 
+      const purchase = await Purchase.findOne({
+        _id: id,
+        organization: organization._id
+      })
+        .populate("items.itemId")
+        .populate("warehouseId")
+        .populate("orderId");
+
+      if (!purchase) {
+        return res.status(404).json({ message: "Purchase not found" });
+      }
       res.status(200).json({
         success: true,
         data: purchase,

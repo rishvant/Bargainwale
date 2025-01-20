@@ -3,6 +3,7 @@ import TotalSale from "../models/totalsale.js";
 import Warehouse from "../models/warehouse.js";
 import Sale from "../models/sale.js";
 import ItemHistory from "../models/itemHistory.js";
+import Organization from "../models/organization.js";
 
 const creditNoteController = {
 
@@ -192,7 +193,15 @@ const creditNoteController = {
 
   getAllCreditNotesForOrganization: async (req, res) => {
     try {
-      const creditNotes = await CreditNote.find({ organization: req.params.orgId })
+      const organization = await Organization.findOne({
+        clerkOrganizationId: req.params.orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const creditNotes = await CreditNote.find({ organization: organization._id })
         .populate("items.itemId")
         .populate("totalSaleId")
         .populate("transporterId");
@@ -212,18 +221,26 @@ const creditNoteController = {
 
   getCreditNoteById: async (req, res) => {
     try {
-      const creditNote = await CreditNote.findById(req.params.creditNoteId)
+      const { id, orgId } = req.params;
+      const organization = await Organization.findOne({
+        clerkOrganizationId: orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const creditNote = await CreditNote.findOne({
+        _id: id,
+        organization: organization._id
+      })
         .populate("items.itemId")
         .populate("totalSaleId")
         .populate("transporterId");
 
       if (!creditNote) {
-        return res.status(404).json({
-          success: false,
-          message: "Credit note not found",
-        });
+        return res.status(404).json({ message: "Credit note not found" });
       }
-
       res.status(200).json({
         success: true,
         data: creditNote,

@@ -6,6 +6,7 @@ import Item from "../models/items.js";
 import ItemHistory from "../models/itemHistory.js";
 import { generateBookingEmailContent } from "../utils/mailContent.js";
 import { sendEmailWithParams } from "./mail.js";
+import Organization from "../models/organization.js";
 
 const bookingController = {
   createBooking: async (req, res) => {
@@ -179,10 +180,10 @@ const bookingController = {
             transactionId: booking._id,
           },
         };
-        console.log("waw",emailDetails);
+        console.log("waw", emailDetails);
         await sendEmailWithParams(emailDetails);
       }
-      
+
       await booking.save();
       res
         .status(201)
@@ -201,7 +202,15 @@ const bookingController = {
 
   getAllBookings: async (req, res) => {
     try {
-      const bookings = await Booking.find({ organization: req.params.orgId })
+      const organization = await Organization.findOne({
+        clerkOrganizationId: req.params.orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const bookings = await Booking.find({ organization: organization._id })
         .populate("items.item")
         .populate("warehouse")
         .populate("buyer");

@@ -43,6 +43,7 @@
     "react-router-dom": "6.17.0",
     "react-select": "^5.8.2",
     "react-slider": "^2.0.6",
+    "react-spinners": "^0.15.0",
     "react-tailwindcss-datepicker": "^1.7.2",
     "react-toastify": "^10.0.5",
     "recharts": "^2.13.0",

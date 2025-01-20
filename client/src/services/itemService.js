@@ -1,21 +1,29 @@
 import axios from "axios";
-import { API_BASE_URL } from "./api";
+import { API_BASE_URL, addOrganizationInterceptor } from "./api";
 
-const orgId = localStorage.getItem("organizationId");
+// Create a new axios instance for item service
+const itemApi = axios.create({
+    baseURL: API_BASE_URL,
+});
+
+// Add the organization interceptor
+addOrganizationInterceptor(itemApi);
 
 export const getItems = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/${orgId}/items`);
+        const orgId = localStorage.getItem('clerk_active_org');
+        const response = await itemApi.get(`${API_BASE_URL}/${orgId}/items`);
         return response.data;
     } catch (error) {
-        console.error("Error fetching prices:", error);
+        console.error("Error fetching items:", error);
         throw error;
     }
 };
 
 export const getPricesByWarehouse = async (warehouseId) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/${orgId}/warehouseprices/${warehouseId}`);
+        const orgId = localStorage.getItem('clerk_active_org');
+        const response = await itemApi.get(`${API_BASE_URL}/${orgId}/warehouseprices/${warehouseId}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching prices:", error);
@@ -25,7 +33,8 @@ export const getPricesByWarehouse = async (warehouseId) => {
 
 export const getPricesById = async (itemId, warehouseId) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/${orgId}/warehouse/${warehouseId}/itemprice/${itemId}`);
+        const orgId = localStorage.getItem('clerk_active_org');
+        const response = await itemApi.get(`${API_BASE_URL}/${orgId}/warehouse/${warehouseId}/itemprice/${itemId}`);
         return response;
     } catch (error) {
         console.error("Error fetching prices:", error);
@@ -33,9 +42,10 @@ export const getPricesById = async (itemId, warehouseId) => {
     }
 };
 
-export const getPrices = async (warehouseId) => {
+export const getPrices = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/${orgId}/prices`);
+        const orgId = localStorage.getItem('clerk_active_org');
+        const response = await itemApi.get(`${API_BASE_URL}/${orgId}/prices`);
         return response.data;
     } catch (error) {
         console.error("Error fetching prices:", error);
@@ -45,7 +55,8 @@ export const getPrices = async (warehouseId) => {
 
 export const addPrice = async (data) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/add`, data);
+        const orgId = localStorage.getItem('clerk_active_org');
+        const response = await itemApi.post(`${API_BASE_URL}/${orgId}/add`, data);
         return response.data;
     } catch (error) {
         console.error("Error adding prices:", error);
@@ -55,20 +66,22 @@ export const addPrice = async (data) => {
 
 export const getItemPriceHistoryById = async (warehouseId) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/${orgId}/history/${warehouseId}`);
+        const orgId = localStorage.getItem('clerk_active_org');
+        const response = await itemApi.get(`${API_BASE_URL}/${orgId}/history/${warehouseId}`);
         return response.data;
     } catch (error) {
-        console.error("Error fetching prices:", error);
+        console.error("Error fetching price history:", error);
         throw error;
     }
 };
 
 export const getItemHistoryById = async (warehouseId) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/${orgId}/itemhistory/${warehouseId}`);
+        const orgId = localStorage.getItem('clerk_active_org');
+        const response = await itemApi.get(`${API_BASE_URL}/${orgId}/itemhistory/${warehouseId}`);
         return response.data;
     } catch (error) {
-        console.error("Error fetching prices:", error);
+        console.error("Error fetching item history:", error);
         throw error;
     }
 };

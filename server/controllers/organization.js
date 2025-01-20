@@ -32,11 +32,15 @@ const orgController = {
     },
     getOrganizationById: async (req, res) => {
         try {
-            const organization = await Organization.findById(req.params.id);
+            const organization = await Organization.findOne({
+                clerkOrganizationId: req.params.id
+            });
+
             if (!organization) {
                 return res.status(404).json({ message: 'Organization not found' });
             }
-            const orders = await Order.find({ organization: req.params.id });
+
+            const orders = await Order.find({ organization: organization._id });
             const organizationWithOrders = {
                 ...organization.toObject(),
                 orders,

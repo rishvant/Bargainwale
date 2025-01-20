@@ -3,17 +3,16 @@ import Warehouse from "../models/warehouse.js";
 import Booking from "../models/booking.js";
 import Transport from "../models/transport.js";
 import ItemHistory from "../models/itemHistory.js";
+import Organization from "../models/organization.js";
 
 const saleController = {
   createSale: async (req, res) => {
     try {
       const {
         warehouseId,
-        
         bookingId,
         items,
         organization,
-        
       } = req.body;
 
       // Fetch the warehouse and booking documents
@@ -152,10 +151,8 @@ const saleController = {
 
       const newSale = new Sale({
         warehouseId,
-        
         bookingId,
         items,
-        
         organization,
       });
 
@@ -174,33 +171,21 @@ const saleController = {
       });
     }
   },
-
   getAllSales: async (req, res) => {
     try {
-      const sales = await Sale.find({ organization: req.params.orgId })
-        .populate({
-          path: "warehouseId",
-          populate: {
-            path: "warehouseManager", 
-          },
-        })
-        .populate({
-          path: "bookingId",
-          populate: [
-            {
-              path: "items.item", 
-            },
-            {
-              path: "buyer",
-            },
-          ],
-        })
-        .populate({
-          path: "items.itemId", 
-          select: "name material flavor weights", 
-        });
-       
-  
+      const organization = await Organization.findOne({
+        clerkOrganizationId: req.params.orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      const sales = await Sale.find({ organization: organization._id })
+        .populate("items.itemId")
+        .populate("warehouseId")
+        .populate("bookingId");
+
       res.status(200).json({
         success: true,
         data: sales,
@@ -213,42 +198,28 @@ const saleController = {
       });
     }
   },
-  
-
   getSaleById: async (req, res) => {
     try {
       const { id, orgId } = req.params;
-      const sale = await Sale.findOne({ _id: id, organization: orgId })
-        .populate({
-          path: "warehouseId",
-          populate: {
-            path: "warehouseManager", 
-          },
-        })
-        .populate({
-          path: "bookingId",
-          populate: [
-            {
-              path: "items.item", 
-            },
-            {
-              path: "buyer", 
-            },
-          ],
-        })
-        .populate({
-          path: "items.itemId",
-          select: "name material flavor weights",
-        });
-       
-  
-      if (!sale) {
-        return res.status(404).json({
-          success: false,
-          message: "Sale not found",
-        });
+      const organization = await Organization.findOne({
+        clerkOrganizationId: orgId
+      });
+
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
       }
-  
+
+      const sale = await Sale.findOne({
+        _id: id,
+        organization: organization._id
+      })
+        .populate("items.itemId")
+        .populate("warehouseId")
+        .populate("bookingId");
+
+      if (!sale) {
+        return res.status(404).json({ message: "Sale not found" });
+      }
       res.status(200).json({
         success: true,
         data: sale,
@@ -261,8 +232,6 @@ const saleController = {
       });
     }
   },
-  
-
   getSalesBetweenDates: async (req, res) => {
     try {
       const { startDate, endDate } = req.body;
@@ -286,7 +255,6 @@ const saleController = {
       res.status(500).json({ success: false, message: "Server Error" });
     }
   },
-
   deleteSale: async (req, res) => {
     try {
       const sale = await Sale.findById(req.params.id);

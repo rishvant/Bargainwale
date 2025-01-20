@@ -16,7 +16,7 @@ import {
 } from "../../utils/helper.js";
 import { API_BASE_URL } from "@/services/api";
 
-const orgId = localStorage.getItem("organizationId");
+const orgId = localStorage.getItem("clerk_active_org");
 const fetchResponse = async () => {
   const response2 = await axios.get(`${API_BASE_URL}/organization/${orgId}`);
   return response2;
@@ -116,12 +116,15 @@ const SalesInvoice = forwardRef(({ sale }, ref) => {
   return (
     <>
       <button
-        onClick={()=> handleDownloadPDF(sale._id)}
+        onClick={() => handleDownloadPDF(sale._id)}
         className="bg-blue-500 text-white py-2 px-4 rounded mb-4 h-20"
       >
         Download as PDF
       </button>
-      <div id={sale._id} className={`${sale._id} invoice-container max-w-3xl bg-white mx-auto p-6 shadow-lg border border-gray-300 overflow-auto max-h-[90vh]`}>
+      <div
+        id={sale._id}
+        className={`${sale._id} invoice-container max-w-3xl bg-white mx-auto p-6 shadow-lg border border-gray-300 overflow-auto max-h-[90vh]`}
+      >
         <h1 className="text-2xl font-bold text-center">Tax Invoice</h1>
         <header className="flex justify-between border-b-2 pb-2 mb-6">
           <div className="flex flex-col items-start space-y-2">
@@ -286,9 +289,7 @@ const SalesInvoice = forwardRef(({ sale }, ref) => {
           </p>
           <p>
             <strong>Amount (in words):</strong>{" "}
-            {"Rs. " +
-              toTitleCase(numberToWords(roundOff(grandTotal))) +
-              " Only"}
+            {"Rs. " + Math.round(grandTotal).toLocaleString() + " Only"}
           </p>
         </section>
 

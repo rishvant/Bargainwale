@@ -19,43 +19,49 @@ export default function SignIn() {
   useEffect(() => {
     const userValidation = async () => {
       try {
-        if (user) {
-          const response = await axios.post(
-            `${API_BASE_URL}/checkUser`,
-            {
-              clerkId: user?.id,
-            }
-          );
+        if (user && organization) {
+          const response = await axios.post(`${API_BASE_URL}/checkUser`, {
+            clerkId: user?.id,
+          });
+
           if (response.status === 200) {
             toast.success("Signed In!", {
               description: `Welcome ${user?.fullName ? user?.fullName : ""}`,
             });
-          }
-          if (organization !== null) {
             navigate("/dashboard");
           }
+        } else if (user && !organization) {
+          navigate("/auth/create-organization");
         }
       } catch (err) {
-        if (err.response && err.response.status === 404) {
-          await axios.post(`${API_BASE_URL}/register`, {
-            clerkId: user.id,
-            name: user?.fullName || user?.firstName,
-            email: user?.emailAddresses[0]?.emailAddress,
-          });
+        if (err.response?.status === 404) {
+          try {
+            await axios.post(`${API_BASE_URL}/register`, {
+              clerkId: user.id,
+              name: user?.fullName || user?.firstName,
+              email: user?.emailAddresses[0]?.emailAddress,
+            });
 
-          toast.success("User registered successfully!");
-          if (organization === null) {
-            navigate("/auth/create-organization");
-          } else {
-            navigate("/dashboard");
+            toast.success("User registered successfully!");
+
+            if (organization) {
+              navigate("/dashboard");
+            } else {
+              navigate("/auth/create-organization");
+            }
+          } catch (error) {
+            console.error("Registration error:", error);
+            toast.error("Error during registration");
           }
         } else {
-          console.log(err);
+          console.error("Validation error:", err);
+          toast.error("Error during validation");
         }
       }
     };
+
     userValidation();
-  }, [user, navigate, organization]);
+  }, [user, organization, navigate]);
 
   return (
     <header>
