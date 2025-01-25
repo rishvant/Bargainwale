@@ -33,7 +33,6 @@ export const getWarehouseById = async (id) => {
 
 export const createWarehouse = async (data) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await warehouseApi.post(`${API_BASE_URL}/warehouse`, data);
         return response.data;
     } catch (error) {
@@ -68,8 +67,7 @@ export const updateInventory = async (id, data) => {
 
 export const updateWarehouse = async (data, id) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await warehouseApi.put(`${API_BASE_URL}/${orgId}/warehouse/${id}`, data);
+        const response = await warehouseApi.put(`${API_BASE_URL}/warehouse/${id}`, data);
         return response.data;
     } catch (error) {
         console.error("Error updating warehouse:", error);
