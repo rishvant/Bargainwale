@@ -24,7 +24,7 @@ export const getItems = async () => {
 export const createItem = async (data) => {
     try {
         const orgId = localStorage.getItem('clerk_active_org');
-        const response = await masterApi.post(`${API_BASE_URL}/${orgId}/items`, data);
+        const response = await masterApi.post(`${API_BASE_URL}/items`, data);
         return response.data;
     } catch (error) {
         console.error("Error creating item:", error);

@@ -34,7 +34,7 @@ export const getWarehouseById = async (id) => {
 export const createWarehouse = async (data) => {
     try {
         const orgId = localStorage.getItem('clerk_active_org');
-        const response = await warehouseApi.post(`${API_BASE_URL}/${orgId}/warehouse`, data);
+        const response = await warehouseApi.post(`${API_BASE_URL}/warehouse`, data);
         return response.data;
     } catch (error) {
         console.error("Error creating warehouse:", error);
