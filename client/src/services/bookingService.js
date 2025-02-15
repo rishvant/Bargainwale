@@ -9,9 +9,10 @@ const bookingApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(bookingApi);
 
+const orgId = localStorage.getItem('clerk_active_org');
+
 export const getBookings = async () => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await bookingApi.get(`${API_BASE_URL}/${orgId}/booking`);
         return response.data;
     } catch (error) {
@@ -22,8 +23,7 @@ export const getBookings = async () => {
 
 export const createBooking = async (data) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await bookingApi.post(`${API_BASE_URL}/${orgId}/booking`, data);
+        const response = await bookingApi.post(`${API_BASE_URL}/booking`, data);
         return response;
     } catch (error) {
         console.error("Error creating booking:", error);
@@ -33,8 +33,7 @@ export const createBooking = async (data) => {
 
 export const deleteBooking = async (id) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await bookingApi.delete(`${API_BASE_URL}/${orgId}/booking/${id}`);
+        const response = await bookingApi.delete(`${API_BASE_URL}/booking/${id}`);
         return response.data;
     } catch (error) {
         console.error("Error deleting booking:", error);
@@ -44,8 +43,7 @@ export const deleteBooking = async (id) => {
 
 export const updateDiscount = async (id, data) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await bookingApi.put(`${API_BASE_URL}/${orgId}/booking/updateDiscount/${id}`, data);
+        const response = await bookingApi.put(`${API_BASE_URL}/booking/updateDiscount/${id}`, data);
         return response;
     } catch (error) {
         console.error("Error updating discount:", error);

@@ -9,10 +9,11 @@ const masterApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(masterApi);
 
+const orgId = localStorage.getItem('clerk_active_org');
+
 // items
 export const getItems = async () => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await masterApi.get(`${API_BASE_URL}/${orgId}/items`);
         return response.data;
     } catch (error) {
@@ -52,7 +53,6 @@ export const deleteItem = async (id) => {
 // transport
 export const getTransport = async () => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await masterApi.get(`${API_BASE_URL}/${orgId}/transports`);
         return response.data;
     } catch (error) {
@@ -91,7 +91,6 @@ export const deleteTransport = async (id) => {
 // buyer
 export const getBuyer = async () => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await masterApi.get(`${API_BASE_URL}/${orgId}/buyers`);
         return response.data;
     } catch (error) {
@@ -130,7 +129,6 @@ export const deleteBuyer = async (id) => {
 // manufacturer
 export const getManufacturer = async () => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await masterApi.get(`${API_BASE_URL}/${orgId}/manufacturers`);
         return response.data;
     } catch (error) {

@@ -9,9 +9,10 @@ const salesApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(salesApi);
 
+const orgId = localStorage.getItem('clerk_active_org');
+
 export const getSales = async () => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await salesApi.get(`${API_BASE_URL}/totalsales/${orgId}`);
         return response.data;
     } catch (error) {
@@ -22,8 +23,7 @@ export const getSales = async () => {
 
 export const createSales = async (data) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await salesApi.post(`${API_BASE_URL}/${orgId}/sale`, data);
+        const response = await salesApi.post(`${API_BASE_URL}/sale`, data);
         return response;
     } catch (error) {
         console.error("Error creating sale:", error);
@@ -33,8 +33,7 @@ export const createSales = async (data) => {
 
 export const updateSales = async (data, id) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await salesApi.put(`${API_BASE_URL}/${orgId}/sale/${id}`, data);
+        const response = await salesApi.put(`${API_BASE_URL}/sale/${id}`, data);
         return response.data;
     } catch (error) {
         console.error("Error updating sale:", error);

@@ -11,11 +11,3 @@ router.put('/api/warehouse/:id', warehouseController.updateWarehouse);
 router.delete('/api/warehouse/:id', warehouseController.deleteWarehouse);
 
 export default router;
-// router.put(
-//   "/api/warehouse/addInventoryItem/:id",
-//   warehouseController.addInventoryItem
-// );
-// router.put(
-//   "/api/warehouse/deleteInventoryItem/:id",
-//   warehouseController.deleteInventoryItem
-// );

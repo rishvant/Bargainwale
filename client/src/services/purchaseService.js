@@ -9,9 +9,10 @@ const purchaseApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(purchaseApi);
 
+const orgId = localStorage.getItem('clerk_active_org');
+
 export const getPurchases = async () => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await purchaseApi.get(`${API_BASE_URL}/${orgId}/purchase`);
         return response.data;
     } catch (error) {
@@ -22,8 +23,7 @@ export const getPurchases = async () => {
 
 export const createPurchase = async (data) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await purchaseApi.post(`${API_BASE_URL}/${orgId}/purchase`, data);
+        const response = await purchaseApi.post(`${API_BASE_URL}/purchase`, data);
         return response;
     } catch (error) {
         console.error("Error creating purchase:", error);
@@ -33,8 +33,7 @@ export const createPurchase = async (data) => {
 
 export const updatePurchase = async (data, id) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await purchaseApi.put(`${API_BASE_URL}/${orgId}/purchase/${id}`, data);
+        const response = await purchaseApi.put(`${API_BASE_URL}/purchase/${id}`, data);
         return response.data;
     } catch (error) {
         console.error("Error updating purchase:", error);

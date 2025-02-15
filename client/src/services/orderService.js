@@ -9,9 +9,10 @@ const orderApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(orderApi);
 
+const orgId = localStorage.getItem('clerk_active_org');
+
 export const getOrders = async () => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await orderApi.get(`${API_BASE_URL}/${orgId}/order`);
         return response.data;
     } catch (error) {
@@ -22,8 +23,7 @@ export const getOrders = async () => {
 
 export const createOrder = async (data) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await orderApi.post(`${API_BASE_URL}/${orgId}/order`, data);
+        const response = await orderApi.post(`${API_BASE_URL}/order`, data);
         return response;
     } catch (error) {
         console.error("Error creating order:", error);
@@ -33,8 +33,7 @@ export const createOrder = async (data) => {
 
 export const updateOrder = async (data, id) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await orderApi.put(`${API_BASE_URL}/${orgId}/order/${id}`, data);
+        const response = await orderApi.put(`${API_BASE_URL}/order/${id}`, data);
         return response.data;
     } catch (error) {
         console.error("Error updating order:", error);
@@ -44,8 +43,7 @@ export const updateOrder = async (data, id) => {
 
 export const deleteOrder = async (id) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await orderApi.delete(`${API_BASE_URL}/${orgId}/order/${id}`);
+        const response = await orderApi.delete(`${API_BASE_URL}/order/${id}`);
         return response.data;
     } catch (error) {
         console.error("Error deleting order:", error);
@@ -55,7 +53,6 @@ export const deleteOrder = async (id) => {
 
 export const updateBillTypePartWise = async (orderId, updateData) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await orderApi.put(`${API_BASE_URL}/${orgId}/order/${orderId}/bill-type`, updateData);
         return response.data;
     } catch (error) {

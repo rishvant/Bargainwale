@@ -9,9 +9,10 @@ const warehouseApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(warehouseApi);
 
+const orgId = localStorage.getItem('clerk_active_org');
+
 export const getWarehouses = async () => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await warehouseApi.get(`${API_BASE_URL}/${orgId}/warehouse`);
         return response.data;
     } catch (error) {
@@ -22,7 +23,6 @@ export const getWarehouses = async () => {
 
 export const getWarehouseById = async (id) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await warehouseApi.get(`${API_BASE_URL}/${orgId}/warehouse/${id}`);
         return response.data;
     } catch (error) {
@@ -43,7 +43,6 @@ export const createWarehouse = async (data) => {
 
 export const fetchWarehouse = async (state, city) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await warehouseApi.get(`${API_BASE_URL}/${orgId}/warehouse/filter`, {
             params: { state, city }
         });
@@ -56,8 +55,7 @@ export const fetchWarehouse = async (state, city) => {
 
 export const updateInventory = async (id, data) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await warehouseApi.put(`${API_BASE_URL}/${orgId}/warehouse/updateInventoryItem/${id}`, data);
+        const response = await warehouseApi.put(`${API_BASE_URL}/warehouse/updateInventoryItem/${id}`, data);
         return response.data;
     } catch (error) {
         console.error("Error updating inventory:", error);
@@ -78,7 +76,7 @@ export const updateWarehouse = async (data, id) => {
 export const deleteWarehouse = async (id) => {
     try {
         const orgId = localStorage.getItem('clerk_active_org');
-        const response = await warehouseApi.delete(`${API_BASE_URL}/${orgId}/warehouse/${id}`);
+        const response = await warehouseApi.delete(`${API_BASE_URL}/warehouse/${id}`);
         return response.data;
     } catch (error) {
         console.error("Error deleting warehouse:", error);

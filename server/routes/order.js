@@ -10,4 +10,3 @@ router.put('/api/order/:id', orderController.updateOrder);
 router.delete('/api/order/:orderId', orderController.deleteOrder);
 
 export default router;
-// router.put('/api/order/:id/bill-type', orderController.updateBillTypePartWise);

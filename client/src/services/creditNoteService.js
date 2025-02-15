@@ -9,9 +9,10 @@ const creditNoteApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(creditNoteApi);
 
+const orgId = localStorage.getItem('clerk_active_org');
+
 export const getCN = async () => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await creditNoteApi.get(`${API_BASE_URL}/creditNote/${orgId}`);
         return response;
     } catch (error) {
@@ -22,7 +23,6 @@ export const getCN = async () => {
 
 export const createCN = async (data) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await creditNoteApi.post(`${API_BASE_URL}/createCreditnote`, data);
         return response;
     } catch (error) {
@@ -33,8 +33,7 @@ export const createCN = async (data) => {
 
 export const updateSales = async (data, id) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
-        const response = await creditNoteApi.put(`${API_BASE_URL}/${orgId}/sale/${id}`, data);
+        const response = await creditNoteApi.put(`${API_BASE_URL}/sale/${id}`, data);
         return response.data;
     } catch (error) {
         console.error("Error updating sales:", error);
@@ -44,7 +43,6 @@ export const updateSales = async (data, id) => {
 
 export const updateCNStatus = async (creditNoteId) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
         const response = await creditNoteApi.patch(`${API_BASE_URL}/creditNote/${creditNoteId}/settle`);
         return response;
     } catch (error) {
