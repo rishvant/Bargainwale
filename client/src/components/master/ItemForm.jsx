@@ -69,7 +69,7 @@ const ItemForm = () => {
     packsize: "",
     staticPrice: "",
     warehouses: [],
-    organization: localStorage.getItem("organizationId"),
+    organization: localStorage.getItem("clerk_active_org"),
   });
 
   useEffect(() => {
@@ -132,7 +132,7 @@ const ItemForm = () => {
         packaging: "box",
         packsize: "",
         staticPrice: "",
-        organization: localStorage.getItem("organizationId"),
+        organization: localStorage.getItem("clerk_active_org"),
       });
       fetchItems();
       setAddModalOpen(false);
@@ -197,7 +197,7 @@ const ItemForm = () => {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("organization", localStorage.getItem("organizationId"));
+    formData.append("organization", localStorage.getItem("clerk_active_org"));
     setProgress(0);
 
     // Simulate progress bar

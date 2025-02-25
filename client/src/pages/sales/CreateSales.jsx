@@ -40,7 +40,7 @@ const CreateSales = () => {
     transporterId: "",
     invoiceNumber: "",
     invoiceDate: "",
-    organization: localStorage.getItem("organizationId"),
+    organization: localStorage.getItem("clerk_active_org"),
   });
 
   const fetchOrders = async () => {

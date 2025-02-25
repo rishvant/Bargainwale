@@ -22,7 +22,7 @@ const ManageOrganizationProfile = ({ setOpen }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchData = async () => {
-    const orgId = localStorage.getItem("organizationId");
+    const orgId = localStorage.getItem("clerk_active_org");
     try {
       const response = await axios.get(`${API_BASE_URL}/organization/${orgId}`);
       setFormData(response.data);
@@ -43,7 +43,7 @@ const ManageOrganizationProfile = ({ setOpen }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const orgId = localStorage.getItem("organizationId");
+    const orgId = localStorage.getItem("clerk_active_org");
 
     try {
       const response = await axios.put(

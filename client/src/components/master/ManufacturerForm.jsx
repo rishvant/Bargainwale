@@ -54,7 +54,7 @@ const ManufacturerForm = () => {
     manufacturerContact: "",
     manufacturerEmail: "",
     manufacturerGstno: "",
-    organization: localStorage.getItem("organizationId"),
+    organization: localStorage.getItem("clerk_active_org"),
   });
   const [editingManufacturer, setEditingManufacturer] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -125,7 +125,7 @@ const ManufacturerForm = () => {
         manufacturerContact: "",
         manufacturerEmail: "",
         manufacturerGstno: "",
-        organization: localStorage.getItem("organizationId"),
+        organization: localStorage.getItem("clerk_active_org"),
       });
       fetchManufacturers();
       setAddModalOpen(false);
@@ -176,7 +176,7 @@ const ManufacturerForm = () => {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("organization", localStorage.getItem("organizationId"));
+    formData.append("organization", localStorage.getItem("clerk_active_org"));
     setProgress(0);
 
     // Simulate progress bar

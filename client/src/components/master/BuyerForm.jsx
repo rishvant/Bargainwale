@@ -55,7 +55,7 @@ const BuyerForm = () => {
     buyerEmail: "",
     buyerGstno: "",
     buyerGooglemaps: "",
-    organization: localStorage.getItem("organizationId"),
+    organization: localStorage.getItem("clerk_active_org"),
   });
   const [editingBuyer, setEditingBuyer] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -128,7 +128,7 @@ const BuyerForm = () => {
         buyerEmail: "",
         buyerGstno: "",
         buyerGooglemaps: "",
-        organization: localStorage.getItem("organizationId"),
+        organization: localStorage.getItem("clerk_active_org"),
       });
       fetchBuyers();
       setAddModalOpen(false);
@@ -179,7 +179,7 @@ const BuyerForm = () => {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("organization", localStorage.getItem("organizationId"));
+    formData.append("organization", localStorage.getItem("clerk_active_org"));
     setProgress(0);
 
     // Simulate progress bar

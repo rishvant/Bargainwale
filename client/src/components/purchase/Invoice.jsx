@@ -16,13 +16,13 @@ import {
 } from "../../utils/helper.js";
 import { API_BASE_URL } from "@/services/api";
 
-const orgId = localStorage.getItem("organizationId");
+const orgId = localStorage.getItem("clerk_active_org");
 
-const fetchResponse = async ()=>{
+const fetchResponse = async () => {
   const response2 = await axios.get(`${API_BASE_URL}/organization/${orgId}`);
   return response2;
-}
-const response=fetchResponse();
+};
+const response = fetchResponse();
 const Invoice = forwardRef(({ purchase, organization }, ref) => {
   // console.log(purchase);
   // console.log(orgId, response.data);
@@ -139,12 +139,15 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
   return (
     <>
       <button
-        onClick={()=> handleDownloadPDF(purchase._id)}
+        onClick={() => handleDownloadPDF(purchase._id)}
         className="bg-blue-500 text-white py-2 px-4 rounded mb-4 h-20"
       >
         Download as PDF
       </button>
-      <div id={purchase._id} className={`${purchase._id} invoice-container max-w-3xl bg-white mx-auto p-6 shadow-lg border border-gray-300 overflow-auto max-h-[90vh]`}>
+      <div
+        id={purchase._id}
+        className={`${purchase._id} invoice-container max-w-3xl bg-white mx-auto p-6 shadow-lg border border-gray-300 overflow-auto max-h-[90vh]`}
+      >
         <h1 className="text-2xl font-bold text-center">Tax Invoice</h1>
         <header className="flex justify-between border-b-2 pb-2 mb-6">
           <div className="flex flex-col items-start space-y-2">
@@ -334,7 +337,7 @@ const Invoice = forwardRef(({ purchase, organization }, ref) => {
           </p>
           <p>
             <strong>Round Off:</strong> ₹
-            {roundOff2(grandTotal - Math.round(grandTotal))*-1}
+            {roundOff2(grandTotal - Math.round(grandTotal)) * -1}
           </p>
           <p>
             <strong>Grand Total:</strong> ₹{grandTotal.toFixed(0)}

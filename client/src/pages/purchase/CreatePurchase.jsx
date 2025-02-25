@@ -30,7 +30,7 @@ const CreatePurchase = () => {
     invoiceNumber: "",
     invoiceDate: "",
     items: [],
-    organization: localStorage.getItem("organizationId"),
+    organization: localStorage.getItem("clerk_active_org"),
   });
 
   const fetchOrders = async () => {
@@ -144,7 +144,7 @@ const CreatePurchase = () => {
           invoiceNumber: "",
           invoiceDate: "",
           items: [],
-          organization: localStorage.getItem("organizationId"),
+          organization: localStorage.getItem("clerk_active_org"),
         });
         setQuantityInputs([]);
         setInputQuantityInputs([]);

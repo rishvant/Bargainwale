@@ -36,7 +36,7 @@ const CreateOrder = () => {
     paymentDays: "",
     description: "",
     warehouse: "",
-    organization: localStorage.getItem("organizationId"),
+    organization: localStorage.getItem("clerk_active_org"),
   });
 
   const fetchItemsOptions = async () => {
@@ -141,7 +141,7 @@ const CreateOrder = () => {
         paymentDays: "",
         description: "",
         warehouse: "",
-        organization: localStorage.getItem("organizationId"),
+        organization: localStorage.getItem("clerk_active_org"),
       });
     } catch (error) {
       if (error.response) {

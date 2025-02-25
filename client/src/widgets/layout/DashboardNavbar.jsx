@@ -64,7 +64,7 @@ export function DashboardNavbar() {
         `${API_BASE_URL}/${user?.organizationMemberships[0]?.organization.id}/organization`
       );
       if (response.status === 200) {
-        if (!localStorage.getItem("organizationId")) {
+        if (!localStorage.getItem("clerk_active_org")) {
           localStorage.setItem("organizationId", response.data[0]._id);
           navigate("/dashboard");
         }
@@ -75,7 +75,7 @@ export function DashboardNavbar() {
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem("organizationId");
+    localStorage.getItem("clerk_active_org");
   };
 
   const toggleFullScreen = () => {
@@ -109,7 +109,7 @@ export function DashboardNavbar() {
 
   useEffect(() => {
     if (!localStorage.getItem("clerk_active_org") || !isSignedIn) {
-      localStorage.removeItem("organizationId");
+      localStorage.getItem("clerk_active_org");
       localStorage.removeItem("isFirstLoad");
     }
   }, [isSignedIn]);
