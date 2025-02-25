@@ -76,7 +76,6 @@ const CreateOrganizationPage = () => {
         toast.success("Organization created successfully!");
         setFormData("");
         setSetAsActive(true);
-        localStorage.setItem("organizationId", response.data.organization?._id);
         navigate("/dashboard");
       } else {
         toast.error("Failed to save organization in the database.");

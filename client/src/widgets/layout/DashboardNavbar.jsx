@@ -65,7 +65,6 @@ export function DashboardNavbar() {
       );
       if (response.status === 200) {
         if (!localStorage.getItem("clerk_active_org")) {
-          localStorage.setItem("organizationId", response.data[0]._id);
           navigate("/dashboard");
         }
       }
