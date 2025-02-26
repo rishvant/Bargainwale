@@ -41,7 +41,7 @@ const TransportForm = () => {
     transportType: "",
     transportContact: "",
     transportAgency: "",
-    organization: localStorage.getItem("clerk_active_org"),
+    organization: localStorage.getItem("organizationId"),
   });
   const [editingTransport, setEditingTransport] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -83,7 +83,7 @@ const TransportForm = () => {
         transportType: "",
         transportContact: "",
         transportAgency: "",
-        organization: localStorage.getItem("clerk_active_org"),
+        organization: localStorage.getItem("organizationId"),
       });
       fetchTransport();
       setAddModalOpen(false);

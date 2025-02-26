@@ -55,7 +55,7 @@ const BuyerForm = () => {
     buyerEmail: "",
     buyerGstno: "",
     buyerGooglemaps: "",
-    organization: localStorage.getItem("clerk_active_org"),
+    organization: localStorage.getItem("organizationId"),
   });
   const [editingBuyer, setEditingBuyer] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -128,7 +128,7 @@ const BuyerForm = () => {
         buyerEmail: "",
         buyerGstno: "",
         buyerGooglemaps: "",
-        organization: localStorage.getItem("clerk_active_org"),
+        organization: localStorage.getItem("organizationId"),
       });
       fetchBuyers();
       setAddModalOpen(false);

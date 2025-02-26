@@ -42,7 +42,7 @@ const CreateBooking = () => {
     state: "",
     pinCode: "",
     paymentDays: "",
-    organization: localStorage.getItem("clerk_active_org"),
+    organization: localStorage.getItem("organizationId"),
   });
 
   const fetchItemsOptions = async () => {
@@ -170,7 +170,7 @@ const CreateBooking = () => {
           state: "",
           pinCode: "",
           paymentDays: "",
-          organization: localStorage.getItem("clerk_active_org"),
+          organization: localStorage.getItem("organizationId"),
         });
       } else {
         toast.error(`Unexpected status code: ${response?.status}`);

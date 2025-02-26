@@ -18,6 +18,7 @@ const UserProfileDropdown = ({ user, handleOnClick, signOut }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("clerk_active_org");
+    localStorage.removeItem("organizationId");
     signOut();
   };
 

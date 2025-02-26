@@ -54,7 +54,7 @@ const ManufacturerForm = () => {
     manufacturerContact: "",
     manufacturerEmail: "",
     manufacturerGstno: "",
-    organization: localStorage.getItem("clerk_active_org"),
+    organization: localStorage.getItem("organizationId"),
   });
   const [editingManufacturer, setEditingManufacturer] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -125,7 +125,7 @@ const ManufacturerForm = () => {
         manufacturerContact: "",
         manufacturerEmail: "",
         manufacturerGstno: "",
-        organization: localStorage.getItem("clerk_active_org"),
+        organization: localStorage.getItem("organizationId"),
       });
       fetchManufacturers();
       setAddModalOpen(false);

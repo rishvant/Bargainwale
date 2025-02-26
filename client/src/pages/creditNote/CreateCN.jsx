@@ -26,7 +26,7 @@ const CreateCN = () => {
     invoiceNumber: "",
     invoiceDate: "",
     items: [],
-    organization: localStorage.getItem("clerk_active_org"),
+    organization: localStorage.getItem("organizationId"),
   });
 
   const fetchSales = async () => {
@@ -120,7 +120,7 @@ const CreateCN = () => {
           invoiceNumber: "",
           invoiceDate: "",
           items: [],
-          organization: localStorage.getItem("clerk_active_org"),
+          organization: localStorage.getItem("organizationId"),
         });
         setQuantityInputs([]);
         setInputQuantityInputs([]);

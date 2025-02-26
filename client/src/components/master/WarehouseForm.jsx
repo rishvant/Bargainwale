@@ -43,7 +43,7 @@ const WarehouseForm = () => {
     warehouseManagerName: "",
     warehouseManagerEmail: "",
     googleMapsLink: "",
-    organization: localStorage.getItem("clerk_active_org"),
+    organization: localStorage.getItem("organizationId"),
   });
   const [editingWarehouse, setEditingWarehouse] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -99,7 +99,7 @@ const WarehouseForm = () => {
         warehouseManagerName: "",
         warehouseManagerEmail: "",
         googleMapsLink: "",
-        organization: localStorage.getItem("clerk_active_org"),
+        organization: localStorage.getItem("organizationId"),
       });
       fetchWarehouses();
       setAddModalOpen(false);

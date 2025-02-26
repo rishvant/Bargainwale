@@ -69,7 +69,7 @@ const ItemForm = () => {
     packsize: "",
     staticPrice: "",
     warehouses: [],
-    organization: localStorage.getItem("clerk_active_org"),
+    organization: localStorage.getItem("organizationId"),
   });
 
   useEffect(() => {
@@ -132,7 +132,7 @@ const ItemForm = () => {
         packaging: "box",
         packsize: "",
         staticPrice: "",
-        organization: localStorage.getItem("clerk_active_org"),
+        organization: localStorage.getItem("organizationId"),
       });
       fetchItems();
       setAddModalOpen(false);

@@ -173,7 +173,7 @@ export default function Home() {
             plantPrice: item.plantPrice,
             pricesUpdated: true,
           })),
-          organization: localStorage.getItem("clerk_active_org"),
+          organization: localStorage.getItem("organizationId"),
         };
         await addPrice(postData);
         setSubmitLoading(false);

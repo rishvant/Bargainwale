@@ -64,7 +64,9 @@ export function DashboardNavbar() {
         `${API_BASE_URL}/${organization?.id}/organization`
       );
       if (response.status === 200) {
+        localStorage.setItem("organizationId", response.data[0]?._id);
         if (!localStorage.getItem("clerk_active_org")) {
+          localStorage.setItem("clerk_active_org", organization?.id);
           navigate("/dashboard");
         }
       }
