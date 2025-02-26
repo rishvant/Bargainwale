@@ -9,10 +9,15 @@ const purchaseApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(purchaseApi);
 
-const orgId = localStorage.getItem('clerk_active_org');
+// Helper function to get the latest orgId
+const getOrgId = () => localStorage.getItem('clerk_active_org');
 
+// Fetch purchases
 export const getPurchases = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await purchaseApi.get(`${API_BASE_URL}/${orgId}/purchase`);
         return response.data;
     } catch (error) {
@@ -21,16 +26,18 @@ export const getPurchases = async () => {
     }
 };
 
+// Create a new purchase
 export const createPurchase = async (data) => {
     try {
         const response = await purchaseApi.post(`${API_BASE_URL}/purchase`, data);
-        return response;
+        return response.data;
     } catch (error) {
         console.error("Error creating purchase:", error);
         throw error;
     }
 };
 
+// Update a purchase
 export const updatePurchase = async (data, id) => {
     try {
         const response = await purchaseApi.put(`${API_BASE_URL}/purchase/${id}`, data);

@@ -61,7 +61,7 @@ export function DashboardNavbar() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/${user?.organizationMemberships[0]?.organization.id}/organization`
+        `${API_BASE_URL}/${organization?.id}/organization`
       );
       if (response.status === 200) {
         if (!localStorage.getItem("clerk_active_org")) {
@@ -71,10 +71,6 @@ export function DashboardNavbar() {
     } catch (err) {
       console.log("Error:", err);
     }
-  };
-
-  const handleSignOut = () => {
-    localStorage.getItem("clerk_active_org");
   };
 
   const toggleFullScreen = () => {

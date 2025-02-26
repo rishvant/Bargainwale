@@ -16,13 +16,8 @@ const UserProfileDropdown = ({ user, handleOnClick, signOut }) => {
     setIsOpen(!isOpen);
   };
 
-  const handleProfile = () => {
-    console.log("Manage Profile clicked");
-  };
-
   const handleLogout = () => {
-    localStorage.getItem("clerk_active_org");
-    localStorage.removeItem("isFirstLoad");
+    localStorage.removeItem("clerk_active_org");
     signOut();
   };
 

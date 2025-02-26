@@ -9,10 +9,15 @@ const salesApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(salesApi);
 
-const orgId = localStorage.getItem('clerk_active_org');
+// Helper function to get the latest orgId
+const getOrgId = () => localStorage.getItem('clerk_active_org');
 
+// Fetch sales
 export const getSales = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await salesApi.get(`${API_BASE_URL}/totalsales/${orgId}`);
         return response.data;
     } catch (error) {
@@ -21,16 +26,18 @@ export const getSales = async () => {
     }
 };
 
+// Create a new sale
 export const createSales = async (data) => {
     try {
         const response = await salesApi.post(`${API_BASE_URL}/sale`, data);
-        return response;
+        return response.data;
     } catch (error) {
         console.error("Error creating sale:", error);
         throw error;
     }
 };
 
+// Update a sale
 export const updateSales = async (data, id) => {
     try {
         const response = await salesApi.put(`${API_BASE_URL}/sale/${id}`, data);

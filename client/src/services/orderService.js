@@ -9,10 +9,15 @@ const orderApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(orderApi);
 
-const orgId = localStorage.getItem('clerk_active_org');
+// Helper function to get the latest orgId
+const getOrgId = () => localStorage.getItem('clerk_active_org');
 
+// Fetch orders
 export const getOrders = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await orderApi.get(`${API_BASE_URL}/${orgId}/order`);
         return response.data;
     } catch (error) {
@@ -21,16 +26,18 @@ export const getOrders = async () => {
     }
 };
 
+// Create a new order
 export const createOrder = async (data) => {
     try {
         const response = await orderApi.post(`${API_BASE_URL}/order`, data);
-        return response;
+        return response.data;
     } catch (error) {
         console.error("Error creating order:", error);
         throw error;
     }
 };
 
+// Update an order
 export const updateOrder = async (data, id) => {
     try {
         const response = await orderApi.put(`${API_BASE_URL}/order/${id}`, data);
@@ -41,6 +48,7 @@ export const updateOrder = async (data, id) => {
     }
 };
 
+// Delete an order
 export const deleteOrder = async (id) => {
     try {
         const response = await orderApi.delete(`${API_BASE_URL}/order/${id}`);
@@ -51,8 +59,12 @@ export const deleteOrder = async (id) => {
     }
 };
 
+// Update bill type for a specific order
 export const updateBillTypePartWise = async (orderId, updateData) => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await orderApi.put(`${API_BASE_URL}/${orgId}/order/${orderId}/bill-type`, updateData);
         return response.data;
     } catch (error) {

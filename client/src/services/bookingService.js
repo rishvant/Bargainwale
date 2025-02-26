@@ -9,10 +9,14 @@ const bookingApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(bookingApi);
 
-const orgId = localStorage.getItem('clerk_active_org');
+// Helper function to get the latest orgId
+const getOrgId = () => localStorage.getItem('clerk_active_org');
 
 export const getBookings = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await bookingApi.get(`${API_BASE_URL}/${orgId}/booking`);
         return response.data;
     } catch (error) {
@@ -33,7 +37,10 @@ export const createBooking = async (data) => {
 
 export const deleteBooking = async (id) => {
     try {
-        const response = await bookingApi.delete(`${API_BASE_URL}/booking/${id}`);
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
+        const response = await bookingApi.delete(`${API_BASE_URL}/${orgId}/booking/${id}`);
         return response.data;
     } catch (error) {
         console.error("Error deleting booking:", error);

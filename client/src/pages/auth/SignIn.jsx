@@ -20,6 +20,7 @@ export default function SignIn() {
     const userValidation = async () => {
       try {
         if (user && organization) {
+          localStorage.setItem("clerk_active_org", organization.id);
           const response = await axios.post(`${API_BASE_URL}/checkUser`, {
             clerkId: user?.id,
           });

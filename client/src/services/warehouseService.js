@@ -9,10 +9,14 @@ const warehouseApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(warehouseApi);
 
-const orgId = localStorage.getItem('clerk_active_org');
+// Helper function to get the latest orgId
+const getOrgId = () => localStorage.getItem('clerk_active_org');
 
 export const getWarehouses = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await warehouseApi.get(`${API_BASE_URL}/${orgId}/warehouse`);
         return response.data;
     } catch (error) {
@@ -23,6 +27,9 @@ export const getWarehouses = async () => {
 
 export const getWarehouseById = async (id) => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await warehouseApi.get(`${API_BASE_URL}/${orgId}/warehouse/${id}`);
         return response.data;
     } catch (error) {
@@ -43,6 +50,9 @@ export const createWarehouse = async (data) => {
 
 export const fetchWarehouse = async (state, city) => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await warehouseApi.get(`${API_BASE_URL}/${orgId}/warehouse/filter`, {
             params: { state, city }
         });
@@ -75,7 +85,9 @@ export const updateWarehouse = async (data, id) => {
 
 export const deleteWarehouse = async (id) => {
     try {
-        const orgId = localStorage.getItem('clerk_active_org');
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await warehouseApi.delete(`${API_BASE_URL}/warehouse/${id}`);
         return response.data;
     } catch (error) {

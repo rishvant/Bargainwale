@@ -9,10 +9,14 @@ const itemApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(itemApi);
 
-const orgId = localStorage.getItem('clerk_active_org');
+// Helper function to get the latest orgId
+const getOrgId = () => localStorage.getItem('clerk_active_org');
 
 export const getItems = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await itemApi.get(`${API_BASE_URL}/${orgId}/items`);
         return response.data;
     } catch (error) {
@@ -23,6 +27,9 @@ export const getItems = async () => {
 
 export const getPricesByWarehouse = async (warehouseId) => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await itemApi.get(`${API_BASE_URL}/${orgId}/warehouseprices/${warehouseId}`);
         return response.data;
     } catch (error) {
@@ -33,6 +40,9 @@ export const getPricesByWarehouse = async (warehouseId) => {
 
 export const getPricesById = async (itemId, warehouseId) => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await itemApi.get(`${API_BASE_URL}/${orgId}/warehouse/${warehouseId}/itemprice/${itemId}`);
         return response;
     } catch (error) {
@@ -43,6 +53,9 @@ export const getPricesById = async (itemId, warehouseId) => {
 
 export const getPrices = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await itemApi.get(`${API_BASE_URL}/${orgId}/prices`);
         return response.data;
     } catch (error) {
@@ -63,6 +76,9 @@ export const addPrice = async (data) => {
 
 export const getItemPriceHistoryById = async (warehouseId) => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await itemApi.get(`${API_BASE_URL}/${orgId}/history/${warehouseId}`);
         return response.data;
     } catch (error) {
@@ -73,6 +89,9 @@ export const getItemPriceHistoryById = async (warehouseId) => {
 
 export const getItemHistoryById = async (warehouseId) => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await itemApi.get(`${API_BASE_URL}/${orgId}/itemhistory/${warehouseId}`);
         return response.data;
     } catch (error) {

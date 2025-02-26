@@ -9,10 +9,14 @@ const creditNoteApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(creditNoteApi);
 
-const orgId = localStorage.getItem('clerk_active_org');
+// Helper function to get the latest orgId
+const getOrgId = () => localStorage.getItem('clerk_active_org');
 
 export const getCN = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await creditNoteApi.get(`${API_BASE_URL}/creditNote/${orgId}`);
         return response;
     } catch (error) {

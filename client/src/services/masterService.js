@@ -9,11 +9,15 @@ const masterApi = axios.create({
 // Add the organization interceptor
 addOrganizationInterceptor(masterApi);
 
-const orgId = localStorage.getItem('clerk_active_org');
+// Helper function to get the latest orgId
+const getOrgId = () => localStorage.getItem('clerk_active_org');
 
-// items
+// Items
 export const getItems = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await masterApi.get(`${API_BASE_URL}/${orgId}/items`);
         return response.data;
     } catch (error) {
@@ -37,7 +41,8 @@ export const updateItem = async (data, id) => {
         const response = await masterApi.put(`${API_BASE_URL}/items/${id}`, data);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error updating item:", error);
+        throw error;
     }
 };
 
@@ -46,13 +51,17 @@ export const deleteItem = async (id) => {
         const response = await masterApi.delete(`${API_BASE_URL}/items/${id}`);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error deleting item:", error);
+        throw error;
     }
 };
 
-// transport
+// Transport
 export const getTransport = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await masterApi.get(`${API_BASE_URL}/${orgId}/transports`);
         return response.data;
     } catch (error) {
@@ -66,7 +75,8 @@ export const createTransport = async (data) => {
         const response = await masterApi.post(`${API_BASE_URL}/transports`, data);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error creating transport:", error);
+        throw error;
     }
 };
 
@@ -75,7 +85,8 @@ export const updateTransport = async (data, id) => {
         const response = await masterApi.put(`${API_BASE_URL}/transports/${id}`, data);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error updating transport:", error);
+        throw error;
     }
 };
 
@@ -84,13 +95,17 @@ export const deleteTransport = async (id) => {
         const response = await masterApi.delete(`${API_BASE_URL}/transports/${id}`);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error deleting transport:", error);
+        throw error;
     }
 };
 
-// buyer
+// Buyer
 export const getBuyer = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await masterApi.get(`${API_BASE_URL}/${orgId}/buyers`);
         return response.data;
     } catch (error) {
@@ -104,7 +119,8 @@ export const createBuyer = async (data) => {
         const response = await masterApi.post(`${API_BASE_URL}/buyers`, data);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error creating buyer:", error);
+        throw error;
     }
 };
 
@@ -113,7 +129,8 @@ export const updateBuyer = async (data, id) => {
         const response = await masterApi.put(`${API_BASE_URL}/buyers/${id}`, data);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error updating buyer:", error);
+        throw error;
     }
 };
 
@@ -122,13 +139,17 @@ export const deleteBuyer = async (id) => {
         const response = await masterApi.delete(`${API_BASE_URL}/buyers/${id}`);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error deleting buyer:", error);
+        throw error;
     }
 };
 
-// manufacturer
+// Manufacturer
 export const getManufacturer = async () => {
     try {
+        const orgId = getOrgId();
+        if (!orgId) throw new Error("Organization ID not found");
+
         const response = await masterApi.get(`${API_BASE_URL}/${orgId}/manufacturers`);
         return response.data;
     } catch (error) {
@@ -142,7 +163,8 @@ export const createManufacturer = async (data) => {
         const response = await masterApi.post(`${API_BASE_URL}/manufacturers`, data);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error creating manufacturer:", error);
+        throw error;
     }
 };
 
@@ -151,7 +173,8 @@ export const updateManufacturer = async (data, id) => {
         const response = await masterApi.put(`${API_BASE_URL}/manufacturers/${id}`, data);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error updating manufacturer:", error);
+        throw error;
     }
 };
 
@@ -160,6 +183,7 @@ export const deleteManufacturer = async (id) => {
         const response = await masterApi.delete(`${API_BASE_URL}/manufacturers/${id}`);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error deleting manufacturer:", error);
+        throw error;
     }
 };

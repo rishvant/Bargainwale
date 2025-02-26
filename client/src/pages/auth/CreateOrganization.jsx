@@ -75,6 +75,7 @@ const CreateOrganizationPage = () => {
       if (response.status === 201) {
         toast.success("Organization created successfully!");
         setFormData("");
+        localStorage.setItem("clerk_active_org", organization?.id);
         setSetAsActive(true);
         navigate("/dashboard");
       } else {
