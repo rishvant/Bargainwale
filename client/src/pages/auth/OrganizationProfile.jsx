@@ -43,7 +43,7 @@ const ManageOrganizationProfile = ({ setOpen }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const orgId = localStorage.getItem("clerk_active_org");
+    const orgId = localStorage.getItem("organizationId");
 
     try {
       const response = await axios.put(
