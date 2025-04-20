@@ -206,16 +206,6 @@ const CreateOrder = () => {
   };
 
   const handleAddItem = () => {
-    // Check if the item with the same rack and name already exists
-    // const isDuplicate = form.items.some(
-    //   (item) => item.itemId === "" && item.pickup === ""
-    // );
-
-    // if (isDuplicate) {
-    //   toast.error("An item with the same rack and name already exists!");
-    //   return;
-    // }
-
     setForm((prevData) => ({
       ...prevData,
       items: [
@@ -258,20 +248,6 @@ const CreateOrder = () => {
         [field]: value.value || "",
       };
 
-      // Validation for duplicate item
-      // const isDuplicate = updatedItems.some(
-      //   (item, idx) =>
-      //     idx !== index &&
-      //     item.itemId === updatedItems[index].itemId &&
-      //     item.pickup === updatedItems[index].pickup
-      // );
-
-      // if (isDuplicate) {
-      //   toast.error(
-      //     "Duplicate item with the same pickup and name is not allowed!"
-      //   );
-      //   return;
-      // }
     } else {
       updatedItems[index] = { ...updatedItems[index], [field]: value };
     }
@@ -549,8 +525,13 @@ const CreateOrder = () => {
                   color="blue"
                   type="submit"
                   className="w-[140px] flex items-center justify-center"
+                  disabled={loading}
                 >
-                  {loading ? <Spinner /> : <span>Create Order</span>}
+                  {loading ? (
+                    <Spinner className="w-4 h-4" />
+                  ) : (
+                    <span>Create Order</span>
+                  )}
                 </Button>
               </div>
             </div>

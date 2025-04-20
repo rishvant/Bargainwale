@@ -249,15 +249,49 @@ const CreateSales = () => {
     }
 
     try {
-      await axios.post(`${API_BASE_URL}/totalsales`, {
+      const response = await axios.post(`${API_BASE_URL}/totalsales`, {
         saleIds: salesIds,
         organization: form.organization,
         totalAmount: totalAmount,
       });
-      setLoading(false);
-      toast.success("Sales created successfully!");
+
+      if (response.status === 201) {
+        toast.success("Sales created successfully!");
+        setForm({
+          warehouseId: "",
+          transporterId: "",
+          invoiceNumber: "",
+          invoiceDate: "",
+          organization: localStorage.getItem("organizationId"),
+        });
+        setSalesIds([]);
+        setQuantityInputs([]);
+        setOpenOrders([]);
+        setSelectedOrder([]);
+        setTotalAmount(0);
+      }
     } catch (error) {
-      console.error("Error finalizing sales:", error);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          toast.error(data.error?.message || data.message);
+        } else if (status === 401) {
+          toast.error("Unauthorized: Please log in again.");
+        } else if (status === 500) {
+          toast.error("Internal server error: Please try again later.");
+        } else {
+          toast.error(`Error: ${data?.message || "Something went wrong!"}`);
+        }
+        console.error("Server-side error:", error.response);
+      } else if (error.request) {
+        toast.error("Network error: Unable to reach the server.");
+        console.error("Network error:", error.request);
+      } else {
+        toast.error("Error: Something went wrong!");
+        console.error("Error:", error.message);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -352,10 +386,6 @@ const CreateSales = () => {
   return (
     <div className="w-full mt-8 mb-8 flex flex-col gap-12">
       <div className="px-7">
-        <div className="flex flex-row justify-between">
-          <div>{/* Additional buttons or actions can be added here */}</div>
-        </div>
-
         <div className="w-full">
           <form
             onSubmit={handleFinalizeSales}
@@ -452,10 +482,14 @@ const CreateSales = () => {
               <Button
                 color="blue"
                 type="submit"
-                className="w-fit flex items-center justify-center"
+                className="w-fit min-w-[140px] flex items-center justify-center"
                 disabled={loading}
               >
-                {loading ? <Spinner /> : <span>Finalize Sales</span>}
+                {loading ? (
+                  <Spinner className="w-4 h-4" />
+                ) : (
+                  <span>Finalize Sales</span>
+                )}
               </Button>
             </div>
           </form>

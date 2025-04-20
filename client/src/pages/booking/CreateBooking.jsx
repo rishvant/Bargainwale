@@ -11,10 +11,10 @@ import { getPricesById } from "@/services/itemService";
 
 // icons
 import { FaPlus } from "react-icons/fa";
-import { TbTriangleInvertedFilled } from "react-icons/tb";
 import { LuAsterisk } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 
+// components
 import CustomTooltip from "../../components/CustomToolTip";
 
 const CreateBooking = () => {
@@ -292,15 +292,6 @@ const CreateBooking = () => {
         toast.error("Discount cannot be negative.");
         return;
       }
-
-      // if (["quantity", "contNumber"].includes(field) && value <= 0) {
-      //   toast.error(
-      //     `${
-      //       field.charAt(0).toUpperCase() + field.slice(1)
-      //     } must be greater than zero.`
-      //   );
-      //   return;
-      // }
     }
 
     if (field === "item" || field === "pickup") {
@@ -429,29 +420,6 @@ const CreateBooking = () => {
   return (
     <div className="w-[99vw] h-full mt-8 mb-8 flex flex-col gap-12">
       <div className="px-7">
-        <div className="flex flex-row justify-between">
-          <div>
-            {/* <button
-              onClick={handleDownloadExcel}
-              className="w-fit bg-[#185C37] py-2 text-white text-[1rem] font-medium rounded-lg px-8 flex flex-row items-center justify-center border-2 border-[#999999] gap-1"
-            >
-              <img className="w-5" src={excel} />
-              Download as Excel
-            </button> */}
-          </div>
-          {/* <div className="flex flex-row gap-4">
-            <button className="w-fit bg-[#FF0000] text-white text-[1rem] font-medium rounded-lg px-8 py-2 flex flex-row items-center justify-center border-2 border-black gap-1">
-              Delete
-            </button>
-            <button className="w-fit bg-[#38454A] text-white text-[1rem] font-medium rounded-lg px-8 py-2 flex flex-row items-center justify-center border-2 border-black gap-1">
-              Edit
-            </button>
-            <button className="w-fit bg-[#DCDCDC] text-black text-[1rem] font-medium rounded-lg px-8 py-2 flex flex-row items-center justify-center border-2 border-black gap-1">
-              PUBLISH
-            </button>
-          </div> */}
-        </div>
-
         <div className="w-full">
           <form
             onSubmit={handleSubmit}
@@ -760,9 +728,10 @@ const CreateBooking = () => {
                   color="blue"
                   type="submit"
                   className="w-fit flex items-center justify-center"
+                  disabled={loading}
                 >
                   {loading ? (
-                    <Spinner />
+                    <Spinner className="w-4 h-4" />
                   ) : approval ? (
                     <span>Send for approval</span>
                   ) : (

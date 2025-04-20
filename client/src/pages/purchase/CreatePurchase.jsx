@@ -53,21 +53,6 @@ const CreatePurchase = () => {
     }
   };
 
-  const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
-      const matchesBargainNo = order.companyBargainNo
-        ?.toLowerCase()
-        ?.includes(searchQuery.toLowerCase());
-      const matchesItemName = order.items?.some((item) =>
-        item.item?.materialdescription
-          ?.toLowerCase()
-          ?.includes(searchQuery.toLowerCase())
-      );
-
-      return matchesBargainNo || matchesItemName;
-    });
-  }, [orders, searchQuery]);
-
   const fetchTransportOptions = async () => {
     try {
       const response = await getTransport();
@@ -367,9 +352,14 @@ const CreatePurchase = () => {
                 <Button
                   color="blue"
                   type="submit"
-                  className="w-fit flex items-center justify-center"
+                  className="w-fit min-w-[158px] flex items-center justify-center"
+                  disabled={loading}
                 >
-                  {loading ? <Spinner /> : <span>Create Purchase</span>}
+                  {loading ? (
+                    <Spinner className="w-4 h-4" />
+                  ) : (
+                    <span>Create Purchase</span>
+                  )}
                 </Button>
               </div>
             </div>

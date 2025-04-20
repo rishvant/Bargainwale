@@ -30,7 +30,7 @@ export const getPurchases = async () => {
 export const createPurchase = async (data) => {
     try {
         const response = await purchaseApi.post(`${API_BASE_URL}/purchase`, data);
-        return response.data;
+        return response;
     } catch (error) {
         console.error("Error creating purchase:", error);
         throw error;

@@ -30,7 +30,7 @@ export const getOrders = async () => {
 export const createOrder = async (data) => {
     try {
         const response = await orderApi.post(`${API_BASE_URL}/order`, data);
-        return response.data;
+        return response;
     } catch (error) {
         console.error("Error creating order:", error);
         throw error;
