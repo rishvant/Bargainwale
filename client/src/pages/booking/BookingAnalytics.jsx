@@ -1,12 +1,17 @@
-import { CheckCircle, Clock, IndianRupeeIcon, ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
+// api services
+import { getBookings } from "@/services/bookingService";
+
+// icons
+import { CheckCircle, Clock, IndianRupeeIcon, ShoppingBag } from "lucide-react";
+
+// components
 import StatCard from "@/components/common/StatCard";
 import DailyBookings from "@/components/bookings/DailyBookings";
 import BookingDistribution from "@/components/bookings/BookingDistribution";
 import BookingTable from "@/components/bookings/BookingTable";
-import { getBookings } from "@/services/bookingService";
-import { useEffect, useState } from "react";
 
 const BookingAnalytics = () => {
   const [bookings, setBookings] = useState([]);

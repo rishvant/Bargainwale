@@ -1,12 +1,17 @@
-import { CheckCircle, Clock, IndianRupeeIcon, ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
+// api services
+import { getOrders } from "@/services/orderService";
+
+// icons
+import { CheckCircle, Clock, IndianRupeeIcon, ShoppingBag } from "lucide-react";
+
+// components
 import StatCard from "@/components/common/StatCard";
 import DailyOrders from "@/components/orders/DailyOrders";
 import OrderDistribution from "@/components/orders/OrderDistribution";
 import OrdersTable from "@/components/orders/OrderTable";
-import { getOrders } from "@/services/orderService";
-import { useEffect, useState } from "react";
 
 const OrderAnalytics = () => {
   const [orders, setOrders] = useState([]);
