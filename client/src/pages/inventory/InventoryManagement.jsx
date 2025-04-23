@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { getWarehouseById, getWarehouses } from "@/services/warehouseService";
-import { getItemHistoryById } from "@/services/itemService";
-import { ChevronDown, Check } from "lucide-react";
 import { Link } from "react-router-dom";
+
+// api services
+import { getWarehouseById, getWarehouses } from "@/services/warehouseService";
+
+// icons
+import { ChevronDown } from "lucide-react";
 
 const InventoryTable = ({
   selectedTab,
   data,
   type,
   onItemClick,
-  // expandedItem,
   itemHistory,
 }) => {
   if (!data?.length) {
@@ -89,59 +91,6 @@ const InventoryTable = ({
                   </Link>
                 </td>
               </tr>
-              {/* {expandedItem === item.item?._id && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-4">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="font-medium text-gray-900 mb-3">
-                        Item History
-                      </h3>
-                      {itemHistory?.length > 0 ? (
-                        <div className="space-y-2">
-                          {itemHistory.map((history, idx) => (
-                            <div
-                              key={idx}
-                              className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm"
-                            >
-                              <div className="flex items-center gap-2 text-sm">
-                                <span>
-                                  {history.sourceModel === "Manufacturer"
-                                    ? `Manufacturer: ${history.source?.manufacturer}`
-                                    : history.sourceModel === "Order"
-                                    ? `Order: ${history.source?.order}`
-                                    : `Warehouse: ${history.source?.warehouse}`}
-                                </span>
-                                <span className="text-gray-400">→</span>
-                                <span>
-                                  {history.destinationModel === "Warehouse"
-                                    ? `Warehouse: ${history.destination?.name}`
-                                    : `Buyer: ${history.destination?.buyer}`}
-                                </span>
-                              </div>
-                              <span
-                                className={`font-medium ${
-                                  history.destinationModel === "Warehouse"
-                                    ? "text-green-600"
-                                    : "text-red-600"
-                                }`}
-                              >
-                                {history.destinationModel === "Warehouse"
-                                  ? "+"
-                                  : "-"}
-                                {history.quantity}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-gray-500 text-sm">
-                          No history available for this item.
-                        </p>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              )} */}
             </React.Fragment>
           ))}
         </tbody>
@@ -157,7 +106,6 @@ export function Inventory() {
   const [warehouses, setWarehouses] = useState([]);
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [pickupFilter, setPickupFilter] = useState("all");
-  // const [expandedItem, setExpandedItem] = useState(null);
   const [itemHistory, setItemHistory] = useState([]);
   const [cityFilter, setCityFilter] = useState("all");
   const [cities, setCities] = useState([]);
@@ -175,7 +123,6 @@ export function Inventory() {
         ];
         setCities(uniqueCities);
 
-        // Automatically select the first warehouse if available
         if (
           warehousesData.filter((warehouse) => warehouse.isActive).length > 0
         ) {
@@ -209,21 +156,6 @@ export function Inventory() {
 
     fetchWarehouseData();
   }, [selectedWarehouse]);
-
-  // const handleItemClick = async (itemId) => {
-  //   if (expandedItem === itemId) {
-  //     setExpandedItem(null);
-  //     setItemHistory([]);
-  //   } else {
-  //     setExpandedItem(itemId);
-  //     try {
-  //       const history = await getItemHistoryById(itemId);
-  //       setItemHistory(history.data);
-  //     } catch (error) {
-  //       console.error("Failed to fetch item history", error);
-  //     }
-  //   }
-  // };
 
   const getFilteredInventory = (type) => {
     if (!currentWarehouse) return [];

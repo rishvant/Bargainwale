@@ -9,7 +9,6 @@ import { getWarehouses } from "@/services/warehouseService";
 import {
   getPricesByWarehouse,
   addPrice,
-  getItemHistoryById,
   getItemPriceHistoryById,
 } from "@/services/itemService";
 

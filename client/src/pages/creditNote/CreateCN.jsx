@@ -1,5 +1,5 @@
 import { Button, Spinner } from "@material-tailwind/react";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import Select from "react-select";
 
@@ -40,21 +40,6 @@ const CreateCN = () => {
       setLoading(false);
     }
   };
-
-  const filteredSales = useMemo(() => {
-    return sales.filter((sale) => {
-      const matchesBargainNo = sale.companyBargainNo
-        ?.toLowerCase()
-        ?.includes(searchQuery.toLowerCase());
-      const matchesItemName = sale.items?.some((item) =>
-        item.item?.materialdescription
-          ?.toLowerCase()
-          ?.includes(searchQuery.toLowerCase())
-      );
-
-      return matchesBargainNo || matchesItemName;
-    });
-  }, [sales, searchQuery]);
 
   const fetchTransportOptions = async () => {
     try {

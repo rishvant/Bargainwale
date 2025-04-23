@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
+
+// api services
+import { getBookings, updateDiscount } from "@/services/bookingService";
+
+// icons
 import { MdCheck, MdClose, MdInfoOutline } from "react-icons/md";
 import {
   Dialog,
@@ -8,8 +14,6 @@ import {
   Button,
   Input,
 } from "@material-tailwind/react";
-import { getBookings, updateDiscount } from "@/services/bookingService";
-import { toast } from "sonner";
 
 const DiscountApprovalPage = () => {
   const [bookings, setBookings] = useState([]);

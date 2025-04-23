@@ -2,7 +2,6 @@ import React from "react";
 import { format } from "date-fns";
 
 const Subscriptions = () => {
-  // Example subscription data - replace with your actual data source
   const subscription = {
     plan: "Premium",
     status: "Active",
