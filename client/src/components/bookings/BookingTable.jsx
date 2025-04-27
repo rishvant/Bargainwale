@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+
+// icons
 import { Search, Eye } from "lucide-react";
 
 const bookingData = [

@@ -1,4 +1,6 @@
 import React from 'react';
+
+// icons
 import { FaFileExcel, FaEnvelope } from 'react-icons/fa';
 
 const Operations = () => {

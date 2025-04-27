@@ -1,7 +1,9 @@
-import { getBookings } from "@/services/bookingService";
-import { getOrders } from "@/services/orderService";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+// api services
+import { getBookings } from "@/services/bookingService";
+import { getOrders } from "@/services/orderService";
 
 export default function StatisticsCards() {
   const [statisticsCardsData, setStatisticsCardsData] = useState([]);
