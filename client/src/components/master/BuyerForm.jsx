@@ -12,18 +12,26 @@ import {
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
+import PhoneInput from "react-phone-number-input";
+import axios from "axios";
+
+// api services
 import {
   createBuyer,
   deleteBuyer,
   getBuyer,
   updateBuyer,
 } from "@/services/masterService";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import PhoneInput from "react-phone-number-input";
-import excel from "../../assets/excel.svg";
-import buyerImage from "../../assets/buyer.png";
-import axios from "axios";
 import { API_BASE_URL } from "@/services/api";
+
+// icons
+import { AiOutlineEdit } from "react-icons/ai";
+import excel from "../../assets/excel.svg";
+
+// assets
+import buyerImage from "../../assets/buyer.png";
+
+// components
 import FileUploadModal from "./FileUploadModal";
 
 const requiredColumns = [

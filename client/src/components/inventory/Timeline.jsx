@@ -1,4 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+
+// api services
+import { API_BASE_URL } from "@/services/api";
+
+// icons
 import {
   Package,
   Factory,
@@ -11,9 +18,6 @@ import {
   Calendar,
   Filter,
 } from "lucide-react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import { API_BASE_URL } from "@/services/api";
 
 const Timeline = () => {
   const [itemLoading, setItemLoading] = useState(false);
