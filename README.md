@@ -10,7 +10,7 @@ Bargainwale is a comprehensive inventory management platform designed to streaml
 
 ## Tech Stack
 
-- **Frontend**: React.js, Tailwind CSS, Redux
+- **Frontend**: React.js, Tailwind CSS
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Authentication**: Clerk (for user management)
@@ -22,7 +22,7 @@ Bargainwale is a comprehensive inventory management platform designed to streaml
 
 Before you begin, make sure you have the following installed:
 
-- [Node.js](https://nodejs.org/) (v14 or higher)
+- [Node.js](https://nodejs.org/) (v20 or higher)
 - [MongoDB](https://www.mongodb.com/) or a MongoDB Atlas account for the database
 - [Clerk Account](https://clerk.dev/) for authentication and user management
 - [Git](https://git-scm.com/)
