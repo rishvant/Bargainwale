@@ -26,26 +26,34 @@ Before you begin, make sure you have the following installed:
 - [MongoDB](https://www.mongodb.com/) or a MongoDB Atlas account for the database
 - [Git](https://git-scm.com/)
 
-### Clone the Repository
+### Steps to Run Locally
 
-```bash
-git clone https://github.com/rishvant/Bargainwale.git
-cd Bargainwale
-```
+1. Clone the repository:
+   ```
+   git clone https://github.com/rishvant/Bargainwale
+   cd Bargainwale
+   ```
 
-### Frontend Setup
+2. Install Frontend Dependencies:
+   ```
+   cd client
+   npm install
+   ```
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+3. Install Backend Dependencies:
+   ```
+   cd server
+   npm install
+   ```
 
-### Backend Setup
+4. Set Up Environment Variables in .env inside server:
 
-```bash
-cd backend
-npm install
-node server.js
-```
-
+5. Run Frontend Server:
+   ```
+   npm run dev
+   ```
+   
+6. Run Backend Server:
+   ```
+   node server.js
+   ```
