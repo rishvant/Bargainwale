@@ -24,6 +24,7 @@ Before you begin, make sure you have the following installed:
 
 - [Node.js](https://nodejs.org/) (v14 or higher)
 - [MongoDB](https://www.mongodb.com/) or a MongoDB Atlas account for the database
+- [Clerk Account](https://clerk.dev/) for authentication and user management
 - [Git](https://git-scm.com/)
 
 ### Steps to Run Locally
