@@ -47,7 +47,7 @@ Before you begin, make sure you have the following installed:
    npm install
    ```
 
-4. Set Up Environment Variables in .env inside server:
+4. Set Up Environment Variables
 
 5. Run Frontend Server:
    ```
