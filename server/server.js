@@ -12,6 +12,7 @@ import helmet from "helmet";
 import validator from "validator";
 import setUpJobs from "./utils/jobs.js";
 import { routes } from "./routes/routes.js";
+import https from "https";
 
 const PORT = process.env.PORT || 3000;
 
@@ -91,4 +92,12 @@ if (cluster.isPrimary) {
         console.log(`Worker ${process.pid} is running on http://localhost:${PORT}`);
         setUpJobs();
     });
+
+    setInterval(() => {
+        https.get(process.env.SERVER_URL, (res) => {
+            console.log("Pinging server to keep alive");
+        }).on("error", (err) => {
+            console.error("Error pinging server: ", err.message);
+        });
+    }, 10 * 60 * 1000);
 }
