@@ -17,8 +17,9 @@ import https from "https";
 const PORT = process.env.PORT || 3000;
 
 const numCPUs = os.cpus().length;
+const useCluster = process.env.USE_CLUSTER === 'true';
 
-if (cluster.isPrimary) {
+if (useCluster && cluster.isPrimary) {
     console.log(`Master process is running. Spawning ${numCPUs} worker processes...`);
 
     for (let i = 0; i < numCPUs; i++) {
@@ -93,11 +94,13 @@ if (cluster.isPrimary) {
         setUpJobs();
     });
 
-    setInterval(() => {
-        https.get(process.env.SERVER_URL, (res) => {
-            console.log("Pinging server to keep alive");
-        }).on("error", (err) => {
-            console.error("Error pinging server: ", err.message);
-        });
-    }, 10 * 60 * 1000);
+    if (process.env.ENABLE_KEEP_ALIVE === 'true') {
+        setInterval(() => {
+            https.get(process.env.SERVER_URL, (res) => {
+                console.log("Pinging server to keep alive");
+            }).on("error", (err) => {
+                console.error("Error pinging server: ", err.message);
+            });
+        }, 10 * 60 * 1000);
+    }
 }
